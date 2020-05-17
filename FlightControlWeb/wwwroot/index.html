@@ -6,6 +6,7 @@
     <title></title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <style>
 
         * {
@@ -17,7 +18,7 @@
             float: left;
             width: 50%;
             padding: 10px;
-            height: 600px; /* Should be removed. Only for demonstration */
+            height: 300px; /* Should be removed. Only for demonstration */
         }
 
         /* Clear floats after the columns */
@@ -27,6 +28,15 @@
             clear: both;
         }
 
+        /* Create smaller columns that floats next to each other */
+        .columnt1 {
+            float: left;
+            width: 25%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Create tables */
         table {
             width: 100%;
         }
@@ -50,6 +60,7 @@
             color: black;
         }
 
+        /* Create map */
         #map {
             width: 50%;
             height: 50%;
@@ -65,12 +76,12 @@
 <body>
 
     <div class="row">
-        <div class="column" style="background-color:#aaa;">
+        <div class="column">
             <div id="map"></div>
         </div>
         <div class="column" style="background-color:#bbb;">
 
-            <h2>Inner Flights</h2>
+            <h2>My Flights</h2>
             <table id="t01">
                 <tr>
                     <th>Flight Id</th>
@@ -115,30 +126,88 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="FlightDetails">
+            <div class="columnt1">
+                <h3>Flight Details</h3>
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Flight Id:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Company Name:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Number Of Passengers:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    External Flight:
+                </div>
+            </div>
+            <div class="columnt1">
+                <br /> <br /> <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Initial Location:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    End Location:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Initial Date Time:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    End Date Time:
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        var map = L.map('map').setView([0, 0], 1);
+        let map = L.map('map').setView([0, 0], 1);
 
         L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=JZeDrYmO2BGmKe83fmkO', {
             attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
         }).addTo(map);
 
-        var airplaneIcon = L.Icon.extend({
+        let airplaneIcon = L.Icon.extend({
             options: {
-                iconUrl: 'purpleAirplane.png',
+                iconUrl: 'airplane.png',
                 // size of the icon
                 iconSize: [25, 40],
                 // point from which the popup should open relative to the iconAnchor
                 popupAnchor: [-3, -76]
             }
         });
-        var airplane1 = new airplaneIcon(),
+        let airplane1 = new airplaneIcon(),
             airplane2 = new airplaneIcon();
 
         L.marker([51.5, -0.09], { icon: airplane1 }).addTo(map);
         L.marker([31.5, -0.09], { icon: airplane2 }).addTo(map);
 
-            //open onclick
-
+        function changeImage() {
+            element = document.getElementById('airplane')
+            if (element.src.match("out")) {
+                element.src = "airplane.png";
+            }
+            else {
+                element.src = "purpleAirplane.png";
+            }
+        }
     </script>
+
+    <img id="airplane" onclick="changeImage()" src="airplane.png">
+
 </body>
 </html>
