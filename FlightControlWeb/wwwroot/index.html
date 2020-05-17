@@ -1,13 +1,144 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
     <title></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+            height: 600px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        table#t01 tr:nth-child() {
+            background-color: #eee;
+        }
+
+        table#t01 th {
+            background-color: #87CEFA;
+            color: black;
+        }
+
+        #map {
+            width: 50%;
+            height: 50%;
+            zoom: 1;
+            position: absolute;
+            top: 10px;
+            bottom: 0;
+            left: 0;
+            right: 0
+        }
+    </style>
 </head>
 <body>
-    <iframe width="500" height="400" frameborder="0"
-            src="https://www.bing.com/maps/embed?h=400&w=500&cp=31.780799999999992~35.22870000000002&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8"
-            scrolling="no">
-    </iframe>
+
+    <div class="row">
+        <div class="column" style="background-color:#aaa;">
+            <div id="map"></div>
+        </div>
+        <div class="column" style="background-color:#bbb;">
+
+            <h2>Inner Flights</h2>
+            <table id="t01">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Company Name</th>
+                    <th>Delete</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                    <td>50</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                    <td>94</td>
+                </tr>
+                <tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                    <td>80</td>
+                </tr>
+            </table>
+
+            <h2>External Flights</h2>
+            <table id="t01">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Company Name</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                </tr>
+                <tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        var map = L.map('map').setView([0, 0], 1);
+
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=JZeDrYmO2BGmKe83fmkO', {
+            attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+        }).addTo(map);
+
+        var airplaneIcon = L.Icon.extend({
+            options: {
+                iconUrl: 'purpleAirplane.png',
+                // size of the icon
+                iconSize: [25, 40],
+                // point from which the popup should open relative to the iconAnchor
+                popupAnchor: [-3, -76]
+            }
+        });
+        var airplane1 = new airplaneIcon(),
+            airplane2 = new airplaneIcon();
+
+        L.marker([51.5, -0.09], { icon: airplane1 }).addTo(map);
+        L.marker([31.5, -0.09], { icon: airplane2 }).addTo(map);
+
+            //open onclick
+
+    </script>
 </body>
 </html>
