@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class IntialLoation
+    public class InitialLocation
     {
-        private double longitude;
-        private double latitude;
-        private string dataTime;
+        public double Longitude { get; }
+        public double Latitude { get; }
+        public DateTime DataTime { get; }
 
-        public IntialLoation(double longitude,double latitude,string dataTime)
+/*        public InitialLocation(double longitude,double latitude,DateTime dataTime)
         {
             this.longitude = longitude;
             this.latitude = latitude;
             this.dataTime = dataTime;
-        }
+        }*/
+
     }
 }

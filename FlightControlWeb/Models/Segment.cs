@@ -7,15 +7,9 @@ namespace FlightControlWeb.Models
 {
     public class Segment
     {
-        private double longitude;
-        private double latitude;
-        private int timespanSeconds;
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double TimespanSeconds { get; set; }
 
-        public Segment(double longitude,double latitude,int timespanSeconds)
-        {
-            this.longitude = longitude;
-            this.latitude = latitude;
-            this.timespanSeconds = timespanSeconds;
-        }
     }
 }
