@@ -1,10 +1,213 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
     <title></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Create smaller columns that floats next to each other */
+        .columnt1 {
+            float: left;
+            width: 25%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Create tables */
+        table {
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        table#t01 tr:nth-child() {
+            background-color: #eee;
+        }
+
+        table#t01 th {
+            background-color: #87CEFA;
+            color: black;
+        }
+
+        /* Create map */
+        #map {
+            width: 50%;
+            height: 50%;
+            zoom: 1;
+            position: absolute;
+            top: 10px;
+            bottom: 0;
+            left: 0;
+            right: 0
+        }
+    </style>
 </head>
 <body>
-    <h1>hello world</h1>
+
+    <div class="row">
+        <div class="column">
+            <div id="map"></div>
+        </div>
+        <div class="column" style="background-color:#bbb;">
+
+            <h2>My Flights</h2>
+            <table id="t01">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Company Name</th>
+                    <th>Delete</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                    <td>50</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                    <td>94</td>
+                </tr>
+                <tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                    <td>80</td>
+                </tr>
+            </table>
+
+            <h2>External Flights</h2>
+            <table id="t01">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Company Name</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                </tr>
+                <tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="FlightDetails">
+            <div class="columnt1">
+                <h3>Flight Details</h3>
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Flight Id:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Company Name:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Number Of Passengers:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    External Flight:
+                </div>
+            </div>
+            <div class="columnt1">
+                <br /> <br /> <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Initial Location:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    End Location:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    Initial Date Time:
+                </div>
+                <br />
+                <div class="row">
+                    <i class='fas fa-plane'></i>
+                    End Date Time:
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let map = L.map('map').setView([0, 0], 1);
+
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=JZeDrYmO2BGmKe83fmkO', {
+            attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+        }).addTo(map);
+
+        let airplaneIcon = L.Icon.extend({
+            options: {
+                iconUrl: 'airplane.png',
+                // size of the icon
+                iconSize: [25, 40],
+                // point from which the popup should open relative to the iconAnchor
+                popupAnchor: [-3, -76]
+            }
+        });
+        let airplane1 = new airplaneIcon(),
+            airplane2 = new airplaneIcon();
+
+        L.marker([51.5, -0.09], { icon: airplane1 }).addTo(map);
+        L.marker([31.5, -0.09], { icon: airplane2 }).addTo(map);
+
+        function changeImage() {
+            element = document.getElementById('airplane')
+            if (element.src.match("out")) {
+                element.src = "airplane.png";
+            }
+            else {
+                element.src = "purpleAirplane.png";
+            }
+        }
+    </script>
+
+    <img id="airplane" onclick="changeImage()" src="airplane.png">
+
 </body>
 </html>
