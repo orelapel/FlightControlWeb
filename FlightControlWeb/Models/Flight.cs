@@ -11,8 +11,8 @@ namespace FlightControlWeb.Models
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int Passengers { get; set; }
-        public string CompanyName { get; set; }
-        public DateTime DataTime { get; set; }
-        public bool IsExternal { get; set; }
+        public string Company_Name { get; set; }
+        public string Date_Time { get; set; }
+        public bool Is_External { get; set; }
     }
 }

@@ -13,6 +13,11 @@ namespace FlightControlWeb.Controllers
     public class serversController : ControllerBase
     {
         private FlightManager flightManager;
+        public serversController(FlightManager flightManager)
+        {
+            this.flightManager = flightManager;
+        }
+
         // GET: api/servers
         [HttpGet]
         public List<Server> Get()

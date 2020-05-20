@@ -8,8 +8,8 @@ namespace FlightControlWeb.Models
     public class FlightPlan
     {
         public int Passengers { get; set; }
-        public string CompanyName { get; set; }
-        public InitialLocation IniLocation { get; set; }
+        public string company_name { get; set; }
+        public InitialLocation Initial_Location { get; set; }
         public List<Segment> Segments { get; set; }
     }
 }
