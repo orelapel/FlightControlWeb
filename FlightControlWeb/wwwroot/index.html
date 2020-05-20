@@ -128,7 +128,7 @@
             </table>
 
             <h2>External Flights</h2>
-            <table id="t01">
+            <table id="t01" scrolling="yes">
                 <tr>
                     <th>Flight Id</th>
                     <th>Company Name</th>
@@ -240,7 +240,9 @@
             layer1.remove();
             layer.addTo(map);
         });
+    </script>
 
+    <script>
         // Delete flight button
         function deleteRow(r) {
             var i = r.parentNode.parentNode.rowIndex;
@@ -263,7 +265,6 @@
     </script>
 
     <script defer type="text/javascript">
-
         function getFlights() {
             $.ajax({
                 type: "GET",
@@ -282,8 +283,8 @@
                     $('#t01').append('<tr><td>' + id + '</td><td>' + flight.company_name + '</td></tr>');
                 }
             });
-
         }
+
         $(document).ready(function () {
             getFlights();
         });
