@@ -4,6 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
     <title></title>
+    <!-- Add icon delete library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
@@ -16,6 +18,7 @@
         /* Create two equal columns that floats next to each other */
         .column {
             float: left;
+            height: 50%;
             width: 50%;
             padding: 10px;
             height: 300px; /* Should be removed. Only for demonstration */
@@ -33,7 +36,6 @@
             float: left;
             width: 25%;
             padding: 10px;
-            height: 300px; /* Should be removed. Only for demonstration */
         }
 
         /* Create tables */
@@ -60,6 +62,20 @@
             color: black;
         }
 
+        .btn {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: RoyalBlue;
+        }
+
         /* Create map */
         #map {
             width: 50%;
@@ -76,7 +92,7 @@
 <body>
 
     <div class="row">
-        <div class="column">
+        <div class="column" style="background-color:#4cff00;">
             <div id="map"></div>
         </div>
         <div class="column" style="background-color:#bbb;">
@@ -88,20 +104,26 @@
                     <th>Company Name</th>
                     <th>Delete</th>
                 </tr>
-                <tr>
-                    <td>Jill</td>
-                    <td>Smith</td>
-                    <td>50</td>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
+                    <!--
+    <td>Jill</td>
+    <td>Smith</td>
+        -->
+                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
                 </tr>
-                <tr>
-                    <td>Eve</td>
-                    <td>Jackson</td>
-                    <td>94</td>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
+                    <!--
+    <td>Eve</td>
+    <td>Jackson</td>
+        -->
+                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
                 </tr>
-                <tr>
-                    <td>John</td>
-                    <td>Doe</td>
-                    <td>80</td>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
+                    <!--
+    <td>John</td>
+    <td>Doe</td>
+        -->
+                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
                 </tr>
             </table>
 
@@ -111,15 +133,15 @@
                     <th>Flight Id</th>
                     <th>Company Name</th>
                 </tr>
-                <tr>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
                     <td>Jill</td>
                     <td>Smith</td>
                 </tr>
-                <tr>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
                     <td>Eve</td>
                     <td>Jackson</td>
                 </tr>
-                <tr>
+                <tr onClick="HighLightTR(this,'#d25dbb');">
                     <td>John</td>
                     <td>Doe</td>
                 </tr>
@@ -174,6 +196,15 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <form class="my-form" method="post" action="/">
+            <h3>upload file</h3>
+            <label class="button" for="fileItem">select files</label>
+            <input type="file" id="fileItem" accept="/application/json">
+            <!-- TODO: IMPLEMENT READ -->
+                    <input type="button" id="submition" value="submit" onclick="readFiles()" />
+                    </form>
+</div>
     <script>
         let map = L.map('map').setView([0, 0], 1);
 
@@ -181,33 +212,81 @@
             attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
         }).addTo(map);
 
+        // Create airplane icon.
         let airplaneIcon = L.Icon.extend({
             options: {
-                iconUrl: 'airplane.png',
                 // size of the icon
                 iconSize: [25, 40],
                 // point from which the popup should open relative to the iconAnchor
                 popupAnchor: [-3, -76]
             }
         });
-        let airplane1 = new airplaneIcon(),
-            airplane2 = new airplaneIcon();
+        let airplane1 = new airplaneIcon({ iconUrl: 'airplane.png' }),
+            airplane2 = new airplaneIcon({ iconUrl: 'purpleAirplane.png' });
 
-        L.marker([51.5, -0.09], { icon: airplane1 }).addTo(map);
-        L.marker([31.5, -0.09], { icon: airplane2 }).addTo(map);
+        let layer = L.marker([51.5, -0.09], { icon: airplane1 });
+        let layer1 = L.marker([51.5, -0.09], { icon: airplane2 });
+        layer.addTo(map);
 
-        function changeImage() {
-            element = document.getElementById('airplane')
-            if (element.src.match("out")) {
-                element.src = "airplane.png";
+        // After clicking on the airplane, change it's color.
+        layer.on('click', function (ev) {
+            layer.remove();
+            // The same position, color change.
+            layer1.addTo(map);
+        });
+
+        // After clicking on the map, change the airplane color back.
+        map.on('click', function (e) {
+            layer1.remove();
+            layer.addTo(map);
+        });
+
+        // Delete flight button
+        function deleteRow(r) {
+            var i = r.parentNode.parentNode.rowIndex;
+            document.getElementById("t01").deleteRow(i);
+        }
+
+        // Highlight row after clicking it
+        var preEl;
+        var orgBColor;
+        var orgTColor;
+        function HighLightTR(el, backColor) {
+            if (typeof (preEl) != 'undefined') {
+                preEl.bgColor = orgBColor;
             }
-            else {
-                element.src = "purpleAirplane.png";
-            }
+            orgBColor = el.bgColor;
+            orgTColor = el.style.color;
+            el.bgColor = backColor;
+            preEl = el;
         }
     </script>
 
-    <img id="airplane" onclick="changeImage()" src="airplane.png">
+    <script defer type="text/javascript">
 
+        function getFlights() {
+            $.ajax({
+                type: "GET",
+                url: "/api/Flights",
+                datatype: 'json',
+                success: successGetFlights,
+                error: function () {
+                    alert("Error getFlights");
+                }
+            });
+        }
+        function successGetFlights(flights) {
+            flights.forEach(function (flight, i) {
+                let id = flight.id;
+                if (!flight.is_external) {
+                    $('#t01').append('<tr><td>' + id + '</td><td>' + flight.company_name + '</td></tr>');
+                }
+            });
+
+        }
+        $(document).ready(function () {
+            getFlights();
+        });
+    </script>
 </body>
 </html>
