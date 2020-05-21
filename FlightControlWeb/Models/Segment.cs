@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,11 @@ namespace FlightControlWeb.Models
 {
     public class Segment
     {
-        public double Longitude { get; set; }
+        [JsonProperty("longitude")]
+        public double Longtitude { get; set; }
+        [JsonProperty("latitude")]
         public double Latitude { get; set; }
-        public double Timespan_Seconds { get; set; }
-
+        [JsonProperty("timespan_seconds")]
+        public double TimespanSeconds { get; set; }
     }
 }
