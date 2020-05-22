@@ -18,10 +18,9 @@
         /* Create two equal columns that floats next to each other */
         .column {
             float: left;
-            height: 50%;
+            height: 60%;
             width: 50%;
             padding: 10px;
-            height: 300px; /* Should be removed. Only for demonstration */
         }
 
         /* Clear floats after the columns */
@@ -109,21 +108,36 @@
     <td>Jill</td>
     <td>Smith</td>
         -->
-                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
+                    <td>
+                        <button type="button" class="btn" onclick="deleteRow(this)">
+                            <span class="fa fa-close"></span>
+                            <span class="submit-text"> Delete</span>
+                        </button>
+                    </td>
                 </tr>
                 <tr onClick="HighLightTR(this,'#d25dbb');">
                     <!--
     <td>Eve</td>
     <td>Jackson</td>
         -->
-                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
+                    <td>
+                        <button type="button" class="btn" onclick="deleteRow(this)">
+                            <span class="fa fa-close"></span>
+                            <span class="submit-text"> Delete</span>
+                        </button>
+                    </td>
                 </tr>
                 <tr onClick="HighLightTR(this,'#d25dbb');">
                     <!--
     <td>John</td>
     <td>Doe</td>
         -->
-                    <td><input type="button" class="btn" value="x Delete" onclick="deleteRow(this)"></td>
+                    <td>
+                        <button type="button" class="btn" onclick="deleteRow(this)">
+                            <span class="fa fa-close"></span>
+                            <span class="submit-text"> Delete</span>
+                        </button>
+                    </td>
                 </tr>
             </table>
 
@@ -264,7 +278,7 @@
         }
     </script>
 
-    <script defer type="text/javascript">
+    <script src="@Url.Content(~/Scripts/jquery-1.5.1.min.js)" defer type="text/javascript">
         function getFlights() {
             $.ajax({
                 type: "GET",
@@ -278,9 +292,9 @@
         }
         function successGetFlights(flights) {
             flights.forEach(function (flight, i) {
-                let id = flight.id;
-                if (!flight.is_external) {
-                    $('#t01').append('<tr><td>' + id + '</td><td>' + flight.company_name + '</td></tr>');
+                let id = flight.Flight_Id;
+                if (!flight.Is_External) {
+                    $('#t01').append('<tr><td>' + id + '</td><td>' + flight.Company_Name + '</td></tr>');
                 }
             });
         }

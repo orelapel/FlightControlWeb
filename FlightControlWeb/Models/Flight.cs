@@ -9,7 +9,7 @@ namespace FlightControlWeb.Models
     public class Flight
     {
         [JsonProperty("flight_id")]
-        public string FlightId { get; set; }
+        public string Flight_Id { get; set; }
         [JsonProperty("longitude")]
         public double Longitude { get; set; }
         [JsonProperty("latitude")]
@@ -17,10 +17,10 @@ namespace FlightControlWeb.Models
         [JsonProperty("passengers")]
         public int Passengers { get; set; }
         [JsonProperty("company_name")]
-        public string CompanyName { get; set; }
+        public string Company_Name { get; set; }
         [JsonProperty("date_time")]
-        public string DateTime { get; set; }
+        public string Date_Time { get; set; }
         [JsonProperty("is_external")]
-        public bool IsExternal { get; set; }
+        public bool Is_External { get; set; }
     }
 }

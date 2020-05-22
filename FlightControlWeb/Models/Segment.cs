@@ -13,6 +13,6 @@ namespace FlightControlWeb.Models
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
         [JsonProperty("timespan_seconds")]
-        public double TimespanSeconds { get; set; }
+        public double Timespan_Seconds { get; set; }
     }
 }

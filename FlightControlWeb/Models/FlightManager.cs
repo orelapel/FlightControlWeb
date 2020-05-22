@@ -25,32 +25,32 @@ namespace FlightControlWeb.Models
         {
             List<Segment> segments1 = new List<Segment>()
             {
-                new Segment{Longtitude=70,Latitude=70,TimespanSeconds=950 },
-                new Segment{Longtitude=75,Latitude=75.34,TimespanSeconds=550 },
-                new Segment{Longtitude=80,Latitude=80,TimespanSeconds=1000 }
+                new Segment{Longtitude=70,Latitude=70,Timespan_Seconds=950 },
+                new Segment{Longtitude=75,Latitude=75.34,Timespan_Seconds=550 },
+                new Segment{Longtitude=80,Latitude=80,Timespan_Seconds=1000 }
             };
-            FlightPlan flightPlan1 = new FlightPlan { Segments =segments1, Passengers = 120, CompanyName = "OrelFlightsLtd", InitialLocation = new InitialLocation { Longitude = 50, Latitude = 50, DateTime = "2020-12-26T21:57:21Z" } };
+            FlightPlan flightPlan1 = new FlightPlan { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-12-26T21:57:21Z" } };
             AddFlightPlan(flightPlan1);
 
 
 
             List<Segment> segments2 = new List<Segment>()
             {
-                new Segment{Longtitude=34.59,Latitude=35.94,TimespanSeconds=550 },
-                new Segment{Longtitude=40,Latitude=41.39,TimespanSeconds=550 },
-                new Segment{Longtitude=59.98,Latitude=59.99,TimespanSeconds=550 }
+                new Segment{Longtitude=34.59,Latitude=35.94,Timespan_Seconds=550 },
+                new Segment{Longtitude=40,Latitude=41.39,Timespan_Seconds=550 },
+                new Segment{Longtitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, CompanyName = "EL-AL", InitialLocation = new InitialLocation { Longitude = 20, Latitude = 20, DateTime = "2020-12-26T23:56:21Z" } };
+            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-12-26T23:56:21Z" } };
             AddFlightPlan(flightPlan2);
             //new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
 
             List<Segment> segments3 = new List<Segment>()
             {
-                new Segment{Longtitude=60,Latitude=60,TimespanSeconds=700 },
-                new Segment{Longtitude=79,Latitude=80,TimespanSeconds=550 },
-                new Segment{Longtitude=89,Latitude=89,TimespanSeconds=550 }
+                new Segment{Longtitude=60,Latitude=60,Timespan_Seconds=700 },
+                new Segment{Longtitude=79,Latitude=80,Timespan_Seconds=550 },
+                new Segment{Longtitude=89,Latitude=89,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan3 = new FlightPlan { Segments = segments3 ,Passengers = 150, CompanyName = "NoaFlightLtd", InitialLocation = new InitialLocation { Longitude = 55, Latitude = 55, DateTime = "2020-12-26T20:12:21Z" } };
+            FlightPlan flightPlan3 = new FlightPlan { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
             AddFlightPlan(flightPlan3);
             AddServer(new Server { ServerId="12344321", ServerURL = "https://localhost:44373" });
 
@@ -97,8 +97,8 @@ namespace FlightControlWeb.Models
             List<Segment> flightSegments;
             foreach (KeyValuePair<string, FlightPlan> flightPlan in dicFlightPlans)
             {
-                lastFlightDate = FromStringToDateTime(flightPlan.Value.InitialLocation.DateTime);
-                flightDate = FromStringToDateTime(flightPlan.Value.InitialLocation.DateTime);
+                lastFlightDate = FromStringToDateTime(flightPlan.Value.Initial_Location.Date_Time);
+                flightDate = FromStringToDateTime(flightPlan.Value.Initial_Location.Date_Time);
                 flightSegments = flightPlan.Value.Segments;
                 int j = 0;
                 if (flightDate > relativeDate)
@@ -107,18 +107,18 @@ namespace FlightControlWeb.Models
                 }
                 while ((flightDate <= relativeDate) && (j < flightSegments.Count)) {
                     lastFlightDate = flightDate;
-                    flightDate=flightDate.AddSeconds(flightSegments[j].TimespanSeconds);
+                    flightDate=flightDate.AddSeconds(flightSegments[j].Timespan_Seconds);
                     j++;
                     
                 }
                 if (flightDate >= relativeDate)
                 {
                     secoInSegment = relativeDate.Subtract(lastFlightDate).TotalSeconds;
-                    relativeTime = secoInSegment / flightSegments[j - 1].TimespanSeconds;
+                    relativeTime = secoInSegment / flightSegments[j - 1].Timespan_Seconds;
                     if (j == 1)
                     {
-                        longtitude1 =  flightPlan.Value.InitialLocation.Longitude;
-                        latitude1 = flightPlan.Value.InitialLocation.Latitude;
+                        longtitude1 =  flightPlan.Value.Initial_Location.Longitude;
+                        latitude1 = flightPlan.Value.Initial_Location.Latitude;
                     }
                     else
                     {
@@ -134,12 +134,12 @@ namespace FlightControlWeb.Models
                     Flight f = new Flight();
                     f.Longitude = longtitude3;
                     f.Latitude = latitude3;
-                    f.FlightId = flightPlan.Key;
-                    f.IsExternal = isExtrnal;
-                    f.CompanyName = flightPlan.Value.CompanyName;
+                    f.Flight_Id = flightPlan.Key;
+                    f.Is_External = isExtrnal;
+                    f.Company_Name = flightPlan.Value.Company_Name;
                     f.Passengers = flightPlan.Value.Passengers;
                     //f.Date_Time = flightDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                    f.DateTime = relative_to;
+                    f.Date_Time = relative_to;
                     flights.Add(f);
                 }
 
@@ -165,13 +165,14 @@ namespace FlightControlWeb.Models
             return dicFlightPlans[id];
         }
 
-        public void AddFlightPlan(FlightPlan flightPlan)
+        public FlightPlan AddFlightPlan(FlightPlan flightPlan)
         { 
             Random rnd = new Random();
             int numberFlight = rnd.Next(1000, 9999);
-            string nameFlight = flightPlan.CompanyName.Substring(0, 3);
+            string nameFlight = flightPlan.Company_Name.Substring(0, 3);
             string id = nameFlight + numberFlight;
             dicFlightPlans.TryAdd(id, flightPlan);
+            return flightPlan;
         }
 
         public void DeleteFlight(string  id)

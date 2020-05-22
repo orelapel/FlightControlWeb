@@ -13,10 +13,10 @@ namespace FlightControlWeb.Models
         public int Passengers { get; set; }
 
         [JsonProperty("company_name")]
-        public string CompanyName { get; set; }
+        public string Company_Name { get; set; }
 
         [JsonProperty("initial_location")]
-        public InitialLocation InitialLocation { get; set; }
+        public InitialLocation Initial_Location { get; set; }
 
         [JsonProperty("segments")]
         public List<Segment> Segments { get; set; }
