@@ -25,30 +25,30 @@ namespace FlightControlWeb.Models
         {
             List<Segment> segments1 = new List<Segment>()
             {
-                new Segment{Longtitude=70,Latitude=70,Timespan_Seconds=950 },
-                new Segment{Longtitude=75,Latitude=75.34,Timespan_Seconds=550 },
-                new Segment{Longtitude=80,Latitude=80,Timespan_Seconds=1000 }
+                new Segment{Longitude=70,Latitude=70,Timespan_Seconds=950 },
+                new Segment{Longitude=75,Latitude=75.34,Timespan_Seconds=550 },
+                new Segment{Longitude=80,Latitude=80,Timespan_Seconds=1000 }
             };
-            FlightPlan flightPlan1 = new FlightPlan { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-12-26T21:57:21Z" } };
+            FlightPlan flightPlan1 = new FlightPlan { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" } };
             AddFlightPlan(flightPlan1);
 
 
 
             List<Segment> segments2 = new List<Segment>()
             {
-                new Segment{Longtitude=34.59,Latitude=35.94,Timespan_Seconds=550 },
-                new Segment{Longtitude=40,Latitude=41.39,Timespan_Seconds=550 },
-                new Segment{Longtitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
+                new Segment{Longitude=34.59,Latitude=35.94,Timespan_Seconds=550 },
+                new Segment{Longitude=40,Latitude=41.39,Timespan_Seconds=550 },
+                new Segment{Longitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-12-26T23:56:21Z" } };
+            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:15:21Z" } };
             AddFlightPlan(flightPlan2);
             //new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
 
             List<Segment> segments3 = new List<Segment>()
             {
-                new Segment{Longtitude=60,Latitude=60,Timespan_Seconds=700 },
-                new Segment{Longtitude=79,Latitude=80,Timespan_Seconds=550 },
-                new Segment{Longtitude=89,Latitude=89,Timespan_Seconds=550 }
+                new Segment{Longitude=60,Latitude=60,Timespan_Seconds=700 },
+                new Segment{Longitude=79,Latitude=80,Timespan_Seconds=550 },
+                new Segment{Longitude=89,Latitude=89,Timespan_Seconds=550 }
             };
             FlightPlan flightPlan3 = new FlightPlan { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
             AddFlightPlan(flightPlan3);
@@ -86,7 +86,7 @@ namespace FlightControlWeb.Models
             //long ticks = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), Int32.Parse(hour), Int32.Parse(minute), Int32.Parse(second),
             //new CultureInfo("en-US", false).Calendar).Ticks;
             //DateTime dt3 = new DateTime(ticks);
-            DateTime relativeDate = FromStringToDateTime(relative_to);
+            DateTime relativeDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(relative_to));
             DateTime flightDate;
             DateTime lastFlightDate;
             double secoInSegment;
@@ -97,8 +97,8 @@ namespace FlightControlWeb.Models
             List<Segment> flightSegments;
             foreach (KeyValuePair<string, FlightPlan> flightPlan in dicFlightPlans)
             {
-                lastFlightDate = FromStringToDateTime(flightPlan.Value.Initial_Location.Date_Time);
-                flightDate = FromStringToDateTime(flightPlan.Value.Initial_Location.Date_Time);
+                lastFlightDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
+                flightDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
                 flightSegments = flightPlan.Value.Segments;
                 int j = 0;
                 if (flightDate > relativeDate)
@@ -122,10 +122,10 @@ namespace FlightControlWeb.Models
                     }
                     else
                     {
-                        longtitude1 = flightSegments[j - 2].Longtitude;
+                        longtitude1 = flightSegments[j - 2].Longitude;
                         latitude1 = flightSegments[j - 2].Latitude;
                     }
-                    longtitude2 = flightSegments[j - 1].Longtitude;
+                    longtitude2 = flightSegments[j - 1].Longitude;
                     latitude2 = flightSegments[j - 1].Latitude;
                     distance = Math.Sqrt((Math.Pow(longtitude2 - longtitude1, 2) + Math.Pow(latitude2 - latitude1, 2)));
                     midDistance = relativeTime * distance;
@@ -205,47 +205,5 @@ namespace FlightControlWeb.Models
             Server server = dicServers[id];
             dicServers.TryRemove(id, out server);
         }
-        public DateTime FromStringToDateTime(string dateTime)
-        {
-            string year = "", month = "", day = "", hour = "", minute = "", second = "";
-            int i = 0;
-            while (dateTime[i] != '-')
-            {
-                year += dateTime[i];
-                i++;
-            }
-            i++;
-            while (dateTime[i] != '-')
-            {
-                month += dateTime[i];
-                i++;
-            }
-            i++;
-            while (dateTime[i] != 'T')
-            {
-                day += dateTime[i];
-                i++;
-            }
-            i++;
-            while (dateTime[i] != ':')
-            {
-                hour += dateTime[i];
-                i++;
-            }
-            i++;
-            while (dateTime[i] != ':')
-            {
-                minute += dateTime[i];
-                i++;
-            }
-            i++;
-            while (dateTime[i] != 'Z')
-            {
-                second += dateTime[i];
-                i++;
-            }
-            return TimeZoneInfo.ConvertTimeToUtc(new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), Int32.Parse(hour), Int32.Parse(minute), Int32.Parse(second)));
-        }
-
     }
 }
