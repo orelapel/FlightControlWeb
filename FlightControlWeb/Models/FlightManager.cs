@@ -23,6 +23,9 @@ namespace FlightControlWeb.Models
         
         public FlightManager()
         {
+            AddServer(new Server { ServerId = "1", ServerURL = "http://ronyut3.atwebpages.com/ap2" });
+            AddServer(new Server { ServerId = "2", ServerURL = "http://ronyut4.atwebpages.com/ap2" });
+
             List<Segment> segments1 = new List<Segment>()
             {
                 new Segment{Longitude=70,Latitude=70,Timespan_Seconds=950 },
@@ -40,7 +43,7 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=40,Latitude=41.39,Timespan_Seconds=550 },
                 new Segment{Longitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:15:21Z" } };
+            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" } };
             AddFlightPlan(flightPlan2);
             //new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
 
@@ -52,16 +55,16 @@ namespace FlightControlWeb.Models
             };
             FlightPlan flightPlan3 = new FlightPlan { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
             AddFlightPlan(flightPlan3);
-            AddServer(new Server { ServerId="12344321", ServerURL = "https://localhost:44373" });
+            //AddServer(new Server { ServerId="12344321", ServerURL = "https://localhost:44373" });
 
         }
-        protected List<Flight> GetFlightsFromServer(string url)//object sender,EventArgs e,
+        protected async Task<List<Flight>> GetFlightsFromServer(string url)//object sender,EventArgs e,
         {
             string strurl = string.Format(url);
             WebRequest requestObjGet = WebRequest.Create(strurl);
             requestObjGet.Method = "GET";
             HttpWebResponse responseObjGet = null;
-            responseObjGet =(HttpWebResponse) requestObjGet.GetResponse();
+            responseObjGet =(HttpWebResponse) await requestObjGet.GetResponseAsync();
 
             string strResult = null;
             using (Stream stream = responseObjGet.GetResponseStream())
@@ -79,13 +82,10 @@ namespace FlightControlWeb.Models
             new Flight { FlightId = "orelApel", Longitude = 8.6, Latitude = 7.4 }
         };
 */
-        public List<Flight> GetAllFlight(string relative_to,bool isExtrnal)
+        public async Task<List<Flight>> GetAllFlight(string relative_to,bool isExtrnal)
         {
             List<Flight> flights = new List<Flight>();
 
-            //long ticks = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), Int32.Parse(hour), Int32.Parse(minute), Int32.Parse(second),
-            //new CultureInfo("en-US", false).Calendar).Ticks;
-            //DateTime dt3 = new DateTime(ticks);
             DateTime relativeDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(relative_to));
             DateTime flightDate;
             DateTime lastFlightDate;
@@ -135,11 +135,12 @@ namespace FlightControlWeb.Models
                     f.Longitude = longtitude3;
                     f.Latitude = latitude3;
                     f.Flight_Id = flightPlan.Key;
-                    f.Is_External = isExtrnal;
+                    f.Is_External = false;
                     f.Company_Name = flightPlan.Value.Company_Name;
                     f.Passengers = flightPlan.Value.Passengers;
                     //f.Date_Time = flightDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                    f.Date_Time = relative_to;
+                    //f.Date_Time = relative_to;
+                    f.Date_Time = flightPlan.Value.Initial_Location.Date_Time;
                     flights.Add(f);
                 }
 
@@ -150,13 +151,22 @@ namespace FlightControlWeb.Models
                 {
 /*                    WebRequest request = WebRequest.Create(server.Value.ServerURL+ "/api/FlightPlan");
                    // flights.Add();*/
-                   string request= server.Value.ServerURL + "/api/Flights?relative_to="+ relative_to;
-                    List<Flight> serverFlights=GetFlightsFromServer(request);
+                    string request= server.Value.ServerURL + "/api/Flights?relative_to=" + relative_to;
+                    List<Flight> serverFlights= await GetFlightsFromServer(request);
+                    ChangeFlightToExternal(serverFlights);
                     flights.AddRange(serverFlights);
                 }
                     
             }
             return flights;  
+        }
+
+        private void ChangeFlightToExternal(List<Flight> flights)
+        {
+            foreach (Flight flight in flights)
+            {
+                flight.Is_External = true;
+            }
         }
 
 
