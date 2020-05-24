@@ -32,7 +32,9 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=75,Latitude=75.34,Timespan_Seconds=550 },
                 new Segment{Longitude=80,Latitude=80,Timespan_Seconds=1000 }
             };
-            FlightPlan flightPlan1 = new FlightPlan { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" } };
+            FlightPlan flightPlan1 = new FlightPlan 
+            { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", 
+                Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" } };
             AddFlightPlan(flightPlan1);
 
 
@@ -43,7 +45,9 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=40,Latitude=41.39,Timespan_Seconds=550 },
                 new Segment{Longitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan2 = new FlightPlan { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" } };
+            FlightPlan flightPlan2 = new FlightPlan 
+            { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", 
+                Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" } };
             AddFlightPlan(flightPlan2);
             //new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
 
@@ -53,12 +57,14 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=79,Latitude=80,Timespan_Seconds=550 },
                 new Segment{Longitude=89,Latitude=89,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan3 = new FlightPlan { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
+            FlightPlan flightPlan3 = new FlightPlan 
+            { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", 
+                Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
             AddFlightPlan(flightPlan3);
             //AddServer(new Server { ServerId="12344321", ServerURL = "https://localhost:44373" });
 
         }
-        protected async Task<List<Flight>> GetFlightsFromServer(string url)//object sender,EventArgs e,
+        protected async Task<List<Flight>> GetFlightsFromServer(string url)
         {
             string strurl = string.Format(url);
             WebRequest requestObjGet = WebRequest.Create(strurl);
@@ -77,88 +83,88 @@ namespace FlightControlWeb.Models
             return serverFlights;
 
         }
-/*        private static List<Flight> flights = new List<Flight>()
-        {
-            new Flight { FlightId = "orelApel", Longitude = 8.6, Latitude = 7.4 }
-        };
-*/
+
         public async Task<List<Flight>> GetAllFlight(string relative_to,bool isExtrnal)
         {
             List<Flight> flights = new List<Flight>();
-
             DateTime relativeDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(relative_to));
-            DateTime flightDate;
-            DateTime lastFlightDate;
-            double secoInSegment;
-            double relativeTime;
-            double distance;
-            double midDistance;
-            double longtitude1, longtitude2, latitude1, latitude2,longtitude3,latitude3;
+            DateTime flightDate, lastFlightDate;
             List<Segment> flightSegments;
             foreach (KeyValuePair<string, FlightPlan> flightPlan in dicFlightPlans)
             {
-                lastFlightDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
-                flightDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
+                lastFlightDate = TimeZoneInfo.ConvertTimeToUtc
+                    (Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
+                flightDate = TimeZoneInfo.ConvertTimeToUtc
+                    (Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
                 flightSegments = flightPlan.Value.Segments;
                 int j = 0;
-                if (flightDate > relativeDate)
-                {
+                if (flightDate > relativeDate) {
                     continue;
                 }
                 while ((flightDate <= relativeDate) && (j < flightSegments.Count)) {
                     lastFlightDate = flightDate;
                     flightDate=flightDate.AddSeconds(flightSegments[j].Timespan_Seconds);
                     j++;
-                    
                 }
-                if (flightDate >= relativeDate)
-                {
-                    secoInSegment = relativeDate.Subtract(lastFlightDate).TotalSeconds;
-                    relativeTime = secoInSegment / flightSegments[j - 1].Timespan_Seconds;
-                    if (j == 1)
-                    {
-                        longtitude1 =  flightPlan.Value.Initial_Location.Longitude;
-                        latitude1 = flightPlan.Value.Initial_Location.Latitude;
-                    }
-                    else
-                    {
-                        longtitude1 = flightSegments[j - 2].Longitude;
-                        latitude1 = flightSegments[j - 2].Latitude;
-                    }
-                    longtitude2 = flightSegments[j - 1].Longitude;
-                    latitude2 = flightSegments[j - 1].Latitude;
-                    distance = Math.Sqrt((Math.Pow(longtitude2 - longtitude1, 2) + Math.Pow(latitude2 - latitude1, 2)));
-                    midDistance = relativeTime * distance;
-                    latitude3 = latitude2 - ((midDistance) * (latitude2 - latitude1) / distance);
-                    longtitude3 =longtitude2 - ((midDistance) * (longtitude2 - longtitude1) / distance);
-                    Flight f = new Flight();
-                    f.Longitude = longtitude3;
-                    f.Latitude = latitude3;
-                    f.Flight_Id = flightPlan.Key;
-                    f.Is_External = false;
-                    f.Company_Name = flightPlan.Value.Company_Name;
-                    f.Passengers = flightPlan.Value.Passengers;
-                    //f.Date_Time = flightDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                    //f.Date_Time = relative_to;
-                    f.Date_Time = flightPlan.Value.Initial_Location.Date_Time;
-                    flights.Add(f);
+                if (flightDate >= relativeDate) {
+                    Flight flight = 
+                        CreateCurrFlight(relativeDate, lastFlightDate,flightPlan,j,flightSegments);
+                    flights.Add(flight);
                 }
-
             }
-            if (isExtrnal)
-            {
-                foreach (KeyValuePair<string, Server> server in dicServers)
-                {
-/*                    WebRequest request = WebRequest.Create(server.Value.ServerURL+ "/api/FlightPlan");
-                   // flights.Add();*/
-                    string request= server.Value.ServerURL + "/api/Flights?relative_to=" + relative_to;
-                    List<Flight> serverFlights= await GetFlightsFromServer(request);
-                    ChangeFlightToExternal(serverFlights);
-                    flights.AddRange(serverFlights);
-                }
-                    
+            if (isExtrnal) {
+                await RunExternalFlights(relative_to, flights);
             }
             return flights;  
+        }
+        private async Task<List<Flight>> RunExternalFlights
+            (string relative_to, List<Flight> flights)
+        {
+            foreach (KeyValuePair<string, Server> server in dicServers)
+            {
+                string request = server.Value.ServerURL + "/api/Flights?relative_to=" +relative_to;
+                List<Flight> serverFlights = await GetFlightsFromServer(request);
+                ChangeFlightToExternal(serverFlights);
+                flights.AddRange(serverFlights);
+            }
+            return flights;
+        }
+
+        private Flight CreateCurrFlight
+            (DateTime relativeDate, DateTime lastFlightDate, 
+            KeyValuePair<string, FlightPlan> flightPlan,
+            int numSeg ,List<Segment> flightSegments)
+        {
+            double longitude1 = 0, longitude2, latitude1 = 0, latitude2, longitude3, latitude3;
+            double secoInSegment, relativeTime, distance, midDistance;
+            secoInSegment = relativeDate.Subtract(lastFlightDate).TotalSeconds;
+            relativeTime = secoInSegment / flightSegments[numSeg - 1].Timespan_Seconds;
+            if (numSeg == 1)
+            {
+                longitude1 = flightPlan.Value.Initial_Location.Longitude;
+                latitude1 = flightPlan.Value.Initial_Location.Latitude;
+            }
+            else
+            {
+                longitude1 = flightSegments[numSeg - 2].Longitude;
+                latitude1 = flightSegments[numSeg - 2].Latitude;
+            }
+            longitude2 = flightSegments[numSeg - 1].Longitude;
+            latitude2 = flightSegments[numSeg - 1].Latitude;
+            distance = Math.Sqrt((Math.Pow(longitude2 - longitude1, 2)
+                + Math.Pow(latitude2 - latitude1, 2)));
+            midDistance = relativeTime * distance;
+            latitude3 = latitude2 - ((midDistance) * (latitude2 - latitude1) / distance);
+            longitude3 = longitude2 - ((midDistance) * (longitude2 - longitude1) / distance);
+            Flight flight = new Flight();
+            flight.Longitude = longitude3;
+            flight.Latitude = latitude3;
+            flight.Flight_Id = flightPlan.Key;
+            flight.Is_External = false;
+            flight.Company_Name = flightPlan.Value.Company_Name;
+            flight.Passengers = flightPlan.Value.Passengers;
+            flight.Date_Time = flightPlan.Value.Initial_Location.Date_Time;
+            return flight;
         }
 
         private void ChangeFlightToExternal(List<Flight> flights)
@@ -188,10 +194,6 @@ namespace FlightControlWeb.Models
         public void DeleteFlight(string  id)
         {
             FlightPlan flightPlan = dicFlightPlans[id];
-/*            if (flightPlan == null)
-            {
-                throw new Exception("fligthPlan not found");
-            }*/
             dicFlightPlans.TryRemove(id,out flightPlan);
         }
         //grt
@@ -202,7 +204,7 @@ namespace FlightControlWeb.Models
             {
                 servers.Add(server.Value);
             }
-                return servers;
+            return servers;
         }
         //POST
         public void AddServer(Server s)
