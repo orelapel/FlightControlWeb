@@ -20,21 +20,21 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/servers
         [HttpGet]
-        public List<Server> Get()
+        public List<Server> GetAllServers()
         {
             return flightManager.GetAllServer();
         }
 
         // POST: api/servers
         [HttpPost]
-        public void Post([FromBody] Server server)
+        public void AddServer([FromBody] Server server)
         {
             flightManager.AddServer(server);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public void DeleteServer(string id)
         {
             flightManager.DeleteServerByID(id);
         }

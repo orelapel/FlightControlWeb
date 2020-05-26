@@ -20,16 +20,16 @@ namespace FlightControlWeb.Controllers
         }
 
 
-        // GET: api/FlightPlan/5
+        // GET: api/FlightPlan/"id"
         [HttpGet("{id}", Name = "Get")]
-        public FlightPlan GetFlightPlan(string id)
+        public async Task<FlightPlan> GetFlightPlan(string id)
         {
-           return flightManager.GetFlightPlanById(id);
+           return await flightManager.GetFlightPlanById(id);
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public FlightPlan Post([FromBody] FlightPlan flightPlan)
+        public FlightPlan AddFlightPlan([FromBody] FlightPlan flightPlan)
         {
             return flightManager.AddFlightPlan(flightPlan);
         }

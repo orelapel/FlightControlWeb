@@ -61,35 +61,15 @@ namespace FlightControlWeb.Models
             { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", 
                 Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
             AddFlightPlan(flightPlan3);
-            //AddServer(new Server { ServerId="12344321", ServerURL = "https://localhost:44373" });
 
         }
-        protected async Task<List<Flight>> GetFlightsFromServer(string url)
-        {
-            string strurl = string.Format(url);
-            WebRequest requestObjGet = WebRequest.Create(strurl);
-            requestObjGet.Method = "GET";
-            HttpWebResponse responseObjGet = null;
-            responseObjGet =(HttpWebResponse) await requestObjGet.GetResponseAsync();
-
-            string strResult = null;
-            using (Stream stream = responseObjGet.GetResponseStream())
-            {
-                StreamReader sr = new StreamReader(stream);
-                strResult = sr.ReadToEnd();
-                sr.Close();
-            }
-            List<Flight> serverFlights = JsonConvert.DeserializeObject<List<Flight>>(strResult);
-            return serverFlights;
-
-        }
-
-        public async Task<List<Flight>> GetAllFlight(string relative_to,bool isExtrnal)
+        public async Task<List<Flight>> GetAllFlight(string relative_to, bool isExtrnal)
         {
             List<Flight> flights = new List<Flight>();
             DateTime relativeDate = TimeZoneInfo.ConvertTimeToUtc(Convert.ToDateTime(relative_to));
             DateTime flightDate, lastFlightDate;
             List<Segment> flightSegments;
+            // Go over all FlightPlans.
             foreach (KeyValuePair<string, FlightPlan> flightPlan in dicFlightPlans)
             {
                 lastFlightDate = TimeZoneInfo.ConvertTimeToUtc
@@ -98,64 +78,69 @@ namespace FlightControlWeb.Models
                     (Convert.ToDateTime(flightPlan.Value.Initial_Location.Date_Time));
                 flightSegments = flightPlan.Value.Segments;
                 int j = 0;
-                if (flightDate > relativeDate) {
+                if (flightDate > relativeDate)
+                {
+                    // This Flight didnt started yet.
                     continue;
                 }
-                while ((flightDate <= relativeDate) && (j < flightSegments.Count)) {
+                // Stop when we are in the segment or there are no more segments.
+                while ((flightDate <= relativeDate) && (j < flightSegments.Count))
+                {
                     lastFlightDate = flightDate;
-                    flightDate=flightDate.AddSeconds(flightSegments[j].Timespan_Seconds);
+                    // Each time- add the timespan seconds of the segments.
+                    flightDate = flightDate.AddSeconds(flightSegments[j].Timespan_Seconds);
                     j++;
                 }
-                if (flightDate >= relativeDate) {
-                    Flight flight = 
-                        CreateCurrFlight(relativeDate, lastFlightDate,flightPlan,j,flightSegments);
+                // If we are in the segment (the flight didnt finished yet).
+                if (flightDate >= relativeDate)
+                {
+                    // Add flight to list.
+                    Flight flight =
+                        CreateCurrFlight(relativeDate, lastFlightDate, flightPlan, j, flightSegments);
                     flights.Add(flight);
                 }
             }
-            if (isExtrnal) {
-                await RunExternalFlights(relative_to, flights);
-            }
-            return flights;  
-        }
-        private async Task<List<Flight>> RunExternalFlights
-            (string relative_to, List<Flight> flights)
-        {
-            foreach (KeyValuePair<string, Server> server in dicServers)
+            // If the user asked for external flights
+            if (isExtrnal)
             {
-                string request = server.Value.ServerURL + "/api/Flights?relative_to=" +relative_to;
-                List<Flight> serverFlights = await GetFlightsFromServer(request);
-                ChangeFlightToExternal(serverFlights);
-                flights.AddRange(serverFlights);
+                await RunExternalFlights(relative_to, flights);
             }
             return flights;
         }
-
         private Flight CreateCurrFlight
-            (DateTime relativeDate, DateTime lastFlightDate, 
+            (DateTime relativeDate, DateTime lastFlightDate,
             KeyValuePair<string, FlightPlan> flightPlan,
-            int numSeg ,List<Segment> flightSegments)
+            int numSeg, List<Segment> flightSegments)
         {
             double longitude1 = 0, longitude2, latitude1 = 0, latitude2, longitude3, latitude3;
-            double secoInSegment, relativeTime, distance, midDistance;
+            double secoInSegment, timeRatio, distance, midDistance;
+            // Find how much time passed from segment till now.
             secoInSegment = relativeDate.Subtract(lastFlightDate).TotalSeconds;
-            relativeTime = secoInSegment / flightSegments[numSeg - 1].Timespan_Seconds;
+            // Find the time ratio.
+            timeRatio = secoInSegment / flightSegments[numSeg - 1].Timespan_Seconds;
+            // Check if we are in the first segment.
             if (numSeg == 1)
             {
+                // The last coordinate is from Initial_Location.
                 longitude1 = flightPlan.Value.Initial_Location.Longitude;
                 latitude1 = flightPlan.Value.Initial_Location.Latitude;
             }
             else
             {
+                // The last coordinate is from last segment.
                 longitude1 = flightSegments[numSeg - 2].Longitude;
                 latitude1 = flightSegments[numSeg - 2].Latitude;
             }
+            // The current segment's coordinates.
             longitude2 = flightSegments[numSeg - 1].Longitude;
             latitude2 = flightSegments[numSeg - 1].Latitude;
+            // Linear interpolation
             distance = Math.Sqrt((Math.Pow(longitude2 - longitude1, 2)
                 + Math.Pow(latitude2 - latitude1, 2)));
-            midDistance = relativeTime * distance;
+            midDistance = timeRatio * distance;
             latitude3 = latitude2 - ((midDistance) * (latitude2 - latitude1) / distance);
             longitude3 = longitude2 - ((midDistance) * (longitude2 - longitude1) / distance);
+            // Create new Flight with the details we found.
             Flight flight = new Flight();
             flight.Longitude = longitude3;
             flight.Latitude = latitude3;
@@ -166,39 +151,122 @@ namespace FlightControlWeb.Models
             flight.Date_Time = flightPlan.Value.Initial_Location.Date_Time;
             return flight;
         }
+        private async Task<List<Flight>> RunExternalFlights
+            (string relative_to, List<Flight> flights)
+        {
+            // Go over all servers
+            foreach (KeyValuePair<string, Server> server in dicServers)
+            {
+                string request = server.Value.ServerURL + "/api/Flights?relative_to=" + relative_to;
+                List<Flight> serverFlights = await GetFlightsFromServer(request);
+                // If the server has no FlightPlan in this relative time.
+                if (serverFlights == null)
+                {
+                    continue;
+                }
+                ChangeFlightToExternal(serverFlights);
+                // Add them to list.
+                flights.AddRange(serverFlights);
+            }
+            return flights;
+        }
+        protected async Task<List<Flight>> GetFlightsFromServer(string url)
+        {
+            string strResult = await SendRequestToServer(url);
+            List<Flight> serverFlights;
+            // Try to deserialize the jason to list of Flight.
+            try
+            {
+                serverFlights = JsonConvert.DeserializeObject<List<Flight>>(strResult);
+            } catch {
+                // If it failed- return null.
+                return null;
+            }
+            return serverFlights;
+
+        }
+        protected async Task<string> SendRequestToServer(string url)
+        {
+            // Create the request.
+            string strurl = string.Format(url);
+            WebRequest requestObjGet = WebRequest.Create(strurl);
+            requestObjGet.Method = "GET";
+            HttpWebResponse responseObjGet = null;
+            // Get the response from server.
+            responseObjGet = (HttpWebResponse)await requestObjGet.GetResponseAsync();
+
+            // Return response to string (json).
+            string strResult = null;
+            using (Stream stream = responseObjGet.GetResponseStream())
+            {
+                StreamReader sr = new StreamReader(stream);
+                strResult = sr.ReadToEnd();
+                sr.Close();
+            }
+            return strResult;
+        }
 
         private void ChangeFlightToExternal(List<Flight> flights)
         {
+            // Go over all Flights.
             foreach (Flight flight in flights)
             {
+                // Change this field to true.
                 flight.Is_External = true;
             }
         }
-
-
-        public FlightPlan GetFlightPlanById(string id)
+        public async Task<FlightPlan> GetFlightPlanById(string id)
         {
-            return dicFlightPlans[id];
+            // Check if this flight is internal.
+            if (dicFlightPlans.ContainsKey(id))
+            {
+                return dicFlightPlans[id];
+            }
+            // Go over all external servers.
+            foreach (KeyValuePair<string, Server> server in dicServers)
+            {
+                // Send request to this server.
+                string request = server.Value.ServerURL + "/api/FlightPlan/" + id;
+                FlightPlan serverFlightPlan = await GetFlightPlanFromServer(request);
+                // check if there is more effective check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // Check if this flight exist in this server.
+                if (serverFlightPlan.Company_Name != null)
+                {
+                    return serverFlightPlan;
+                }
+            }
+            // There is no FlightPlan with this id (internal and external).
+            return null;
         }
 
+        private async Task<FlightPlan> GetFlightPlanFromServer(string url)
+        {
+            string strResult = await SendRequestToServer(url);
+            // Deserialize the json to FlightPlan object.
+            FlightPlan flightPlan = JsonConvert.DeserializeObject<FlightPlan>(strResult);
+            return flightPlan;
+        }
         public FlightPlan AddFlightPlan(FlightPlan flightPlan)
         { 
+            // Create id to the new FlightPlan.
             Random rnd = new Random();
             int numberFlight = rnd.Next(1000, 9999);
             string nameFlight = flightPlan.Company_Name.Substring(0, 3);
             string id = nameFlight + numberFlight;
+            // Add to FlightPlan dictionary.
             dicFlightPlans.TryAdd(id, flightPlan);
             return flightPlan;
         }
 
         public void DeleteFlight(string  id)
         {
+            // Try to remove the Flight with this id.
             FlightPlan flightPlan = dicFlightPlans[id];
             dicFlightPlans.TryRemove(id,out flightPlan);
         }
-        //grt
         public List<Server> GetAllServer()
         {
+            // Create list of servers from the dictionary.
             List<Server> servers = new List<Server>();
             foreach (KeyValuePair<string, Server> server in dicServers)
             {
@@ -206,14 +274,13 @@ namespace FlightControlWeb.Models
             }
             return servers;
         }
-        //POST
         public void AddServer(Server s)
         {
             dicServers.TryAdd(s.ServerId,s);
         }
-        //dELETE 
         public void DeleteServerByID(string  id)
         {
+            // Find the server with this id and delete him.
             Server server = dicServers[id];
             dicServers.TryRemove(id, out server);
         }

@@ -22,15 +22,15 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public async Task<IEnumerable<Flight>> GetAllFlights (string relative_to)
         {
+            // check if the request contains "sync_all"
             string request = Request.QueryString.Value;
             bool isExternal = request.Contains("sync_all");
-
             return await flightManager.GetAllFlight(relative_to, isExternal);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public void DeleteFlight(string id)
         {
             flightManager.DeleteFlight(id);
         }
