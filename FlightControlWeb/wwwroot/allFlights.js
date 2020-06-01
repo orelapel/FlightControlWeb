@@ -49,15 +49,13 @@ function successGetAllFlights(flights) {
             planesMap.delete(id + "@");
 
             // Remove plane path from map.
-            if (mark != idFlight) {
-                clearMapWithoutLine();
-            } else {
-                clearMap();
+            if (mark == id) {
+                removeRoute();
             }
         }
     }
 
-    // Update or/and add flighte in the tables.
+    // Update or/and add flighte to the tables.
     flights.forEach(function (flight, i) {
         // Get flight id.
         let idFlight = flight.flight_Id;
@@ -77,6 +75,7 @@ function successGetAllFlights(flights) {
             planesMap.set(idFlight, layer);
             planesMap.set(idFlight + "@", layer1);
 
+            // Add rows to tables.
             if (!flight.is_External) {
                 $('#t01').append(
                  '<tr id="' + idFlight + '"><td onClick="showChosenFlight(id)" id="'
@@ -90,6 +89,7 @@ function successGetAllFlights(flights) {
                     + idFlight + '</td><td> ' + flight.company_Name + '</td></tr>');
             }
 
+            // When click on Delete, delete row.
             let del = document.getElementById("deleteRow" + idFlight);
             if (del != null) {
                 del.addEventListener("click", function () {
@@ -100,6 +100,7 @@ function successGetAllFlights(flights) {
             // add plane to map.
             addNewPlaneToMap(layer, layer1);
         } else {
+            // Update plane location.
             let layer = planesMap.get(idFlight);
             let layer1 = planesMap.get(idFlight + "@");
             layer.setLatLng([latitude, longitude]);
@@ -108,6 +109,7 @@ function successGetAllFlights(flights) {
     });
 }
 
+// If flight is not finished, change iStillFlying to be true .
 function isFinished(flights, id) {
     for (let flight of flights) {
         //Get flight id.

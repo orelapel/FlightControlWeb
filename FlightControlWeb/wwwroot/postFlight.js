@@ -12,6 +12,7 @@ function postFlight(jsonString) {
     xhr.send(jsonString);
 }
 
+// After opening file, read it.
 function readFiles() {
     let file = document.getElementById("fileItem").files[0];
     let reader = new FileReader();

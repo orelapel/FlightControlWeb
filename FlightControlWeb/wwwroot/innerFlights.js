@@ -47,16 +47,13 @@ function successGetFlights(flights) {
             planesMap.delete(id + "@");
 
             // Remove plane path from map.
-            // TODO: change when fix this in delete row!!!
-            if (mark != idFlight) {
-                clearMapWithoutLine();
-            } else {
-                clearMap();
+            if (mark == idFlight) {
+                removeRoute();
             }
         }
     }
 
-    // Update or/and add flighte in the tables.
+    // Update or/and add flighte to the tables.
     flights.forEach(function (flight, i) {
         // Get flight id.
         let idFlight = flight.flight_Id;
@@ -76,6 +73,7 @@ function successGetFlights(flights) {
             planesMap.set(idFlight, layer);
             planesMap.set(idFlight + "@", layer1);
 
+            // Add rows to table.
             if (!flight.is_External) {
                 $('#t01').append(
                     '<tr id="' + idFlight + '"><td onClick="showChosenFlight(id)" id="'
@@ -96,6 +94,7 @@ function successGetFlights(flights) {
             // add plane to map.
             addNewPlaneToMap(layer, layer1);
         } else {
+            // Update plane location.
             let layer = planesMap.get(idFlight);
             let layer1 = planesMap.get(idFlight + "@");
             layer.setLatLng([latitude, longitude]);

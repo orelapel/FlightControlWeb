@@ -4,109 +4,117 @@
     <title>Flight Control Web</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <!-- Add icon delete library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 
     <!-- Refernce to style -->
-    <link rel="stylesheet" type="text/css" href="StyleSheet.css" />
+    <link rel="stylesheet" type="text/css" href="styleSheet.css" />
 </head>
+
 <body>
-    <div class="w3-content" style="max-width:1400px">
+    <div class="content">
 
         <!-- Header -->
-        <header class="w3-container w3-center w3-padding-28">
+        <header id="header1" class="container center padding-28">
+            <br />
             <h1><b>Flight Control</b></h1>
             <p>By Orel, Noa, Eden and Reut</p>
+            <br />
         </header>
+        <hr>
 
         <!-- Error message -->
         <div id="snackbar"></div>
 
         <!-- Grid -->
-        <div class="w3-row">
+        <div class="row">
 
-            <div class="w3-col l6 s12">
+            <div class="col l6 s12">
                 <!-- Map -->
-                <div class="w3-card-4 w3-margin w3-white">
-                    <div class="w3-container">
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
                         <h3><b>Map</b></h3>
                         <div id="map"></div>
                         <br />
                     </div>
-                </div>
-                <hr>
+                </div> <hr />
 
                 <!-- Flight details -->
-                <div class="w3-card-4 w3-margin w3-white">
-                    <div class="w3-container">
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
                         <h3><b>Flight Details</b></h3>
-                        <div class="row">
-                            <div class="row">
-                                <div class="column left">
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        Flight Id:
-                                        <label class="data" type="text" id="flightId"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        Company Name:
-                                        <label class="data" type="text" id="companyName"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        Number Of Passengers:
-                                        <label class="data" type="text" id="passengers"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        External Flight:
-                                        <label class="data" type="text" id="externalFlight"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
+                        <div id="flightDet" class="row">
+                            <div class="column left">
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Flight Id:
+                                    <label class="data" type="text" id="flightId"
+                                           readonly="readonly"></label>
                                 </div>
-                                <div class="column right">
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        Initial Location:
-                                        <label class="data" type="text" id="initialLocation"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        End Location:
-                                        <label class="data" type="text" id="endLocation"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        Initial Date Time:
-                                        <label class="data" type="text" id="initialDateTime"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <i class='fas fa-plane'></i>
-                                        End Date Time:
-                                        <label class="data" type="text" id="endDateTime"
-                                               readonly="readonly"></label>
-                                    </div>
-                                    <br />
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Company Name:
+                                    <label class="data" type="text" id="companyName"
+                                           readonly="readonly"></label>
                                 </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Number Of Passengers:
+                                    <label class="data" type="text" id="passengers"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    External Flight:
+                                    <label class="data" type="text" id="externalFlight"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="column right">
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Initial Location:
+                                    <label class="data" type="text" id="initialLocation"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    End Location:
+                                    <label class="data" type="text" id="endLocation"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Initial Date Time:
+                                    <label class="data" type="text" id="initialDateTime"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    End Date Time:
+                                    <label class="data" type="text" id="endDateTime"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
                             </div>
                         </div>
                     </div>
@@ -114,10 +122,11 @@
                 <hr>
             </div>
 
-            <div class="w3-col l6">
+            <div class="col l6">
                 <!-- My Flights -->
-                <div class="w3-card w3-margin w3-margin-top">
-                    <div class="w3-container w3-white">
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
                         <h3><b>My Flights</b></h3>
                         <table id="t01">
                             <tr>
@@ -132,8 +141,9 @@
                 </div><hr>
 
                 <!-- External Flights -->
-                <div class="w3-card w3-margin">
-                    <div class="w3-container w3-white">
+                <div class="card margin">
+                    <div class="container white">
+                        <br />
                         <h3><b>External Flights</b></h3>
                         <table id="t02" scrolling="yes">
                             <tr>
@@ -147,8 +157,9 @@
                 <hr>
 
                 <!-- Accept Json File-->
-                <div class="w3-card-4 w3-margin w3-white">
-                    <div class="w3-container">
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
                         <h3><b>Upload file</b></h3>
                         <form class="my-form" method="post" action="/">
                             <label class="button" for="fileItem">select files</label>

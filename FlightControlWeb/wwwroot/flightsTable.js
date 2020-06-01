@@ -41,11 +41,12 @@ function showChosenFlight(idFlight) {
 }
 
 function removeShownChosenFlight(idFlight) {
+    // Remove flight details.
     removeFlightDetails();
+    // Change row color back.
     HighLightTR(idFlight, '#fff');
-    if (mark != idFlight) {
-        clearMapWithoutLine();
-    } else {
-        clearMap();
+    // Remove flight route.
+    if (mark == idFlight) {
+        removeRoute();
     }
 }

@@ -1,6 +1,5 @@
 ﻿let map = L.map('map').setView([0, 0], 1);
 
-// TODO: MORE THAN 100
 L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=JZeDrYmO2BGmKe83fmkO', {
     attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
 }).addTo(map);
@@ -42,7 +41,9 @@ function returnPlanesToOriginalColor() {
             let id1 = id + "@";
             let layer1 = planesMap.get(id1);
             changePlaneColorBack(layer, layer1);
-            clearMap();
+
+            // Remove flight route.
+            removeRoute();
         }
     }
 }
@@ -68,7 +69,7 @@ function removePlane(idFlight) {
     layer1.remove();
 }
 
-// Add flight rout to plane.
+// Add flight route to plane.
 function addRoute(flightPlan) {
     let latlngs = [
         [flightPlan.initial_Location.latitude, flightPlan.initial_Location.longitude]];
@@ -80,31 +81,11 @@ function addRoute(flightPlan) {
     map.fitBounds(polyline.getBounds());
 }
 
-// Remove flight rout of plane.
-function clearMap() {
+// Remove flight route of plane.
+function removeRoute() {
     for (i in map._layers) {
         if (map._layers[i]._path != undefined) {
-            try {
-                map.removeLayer(map._layers[i]);
-            }
-            catch (e) {
-                console.log("problem with " + e + map._layers[i]);
-            }
-        }
-    }
-}
-
-function clearMapWithoutLine() {
-    for (i in map._layers) {
-        if (map._layers[i]._path != undefined) {
-            try {
-                if (map._layers[i]._path == undefined) {
-                    map.removeLayer(map._layers[i]);
-                }
-            }
-            catch (e) {
-                console.log("problem with " + e + map._layers[i]);
-            }
+            map.removeLayer(map._layers[i]);
         }
     }
 }

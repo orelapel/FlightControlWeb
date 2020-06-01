@@ -1,4 +1,5 @@
 ﻿let mark;
+
 // DELETE/api/Flights
 function deleteFlightPlan(idFlight) {
     let url = "/api/Flights/" + idFlight;
@@ -14,10 +15,8 @@ function deleteFlightPlan(idFlight) {
 // After clicking the Delete button, implement this.
 function deleteRow(idFlight, button) {
     // Remove plane path from map.
-    if (mark != idFlight) {
-        clearMapWithoutLine();
-    } else {
-        clearMap();
+    if (mark == idFlight) {
+        removeRoute();
     }
 
     // Remove flight details.

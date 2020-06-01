@@ -1,7 +1,8 @@
-﻿body, h1, h2, h3, h4, h5 {
+﻿/* Font text */
+body, h1, h2, h3, h4, h5 {
     font-family: "Raleway", sans-serif
 }
-/* Create tables */
+/* Design tables */
 table {
     width: 100%;
 }
@@ -34,25 +35,23 @@ table#t02 tr:nth-child() {
     background-color: #eee;
 }
 
-/* Create map */
+/* Design map */
 #map {
     padding: 100px;
-    /*width: 635px;*/
     height: 400px;
     zoom: 1;
-    /*position: absolute;*/
-    /*top: 200px;*/
 }
 
 * {
     box-sizing: border-box;
 }
 
-/* Create two unequal columns that floats next to each other */
 .column {
     float: left;
     padding: 10px;
 }
+
+/* Create two unequal columns that floats next to each other */
 
 .left {
     width: 45%;
@@ -71,6 +70,7 @@ table#t02 tr:nth-child() {
     clear: both;
 }
 
+/* Background */
 body {
     background-image: url('skyBackground.jpg');
     background-repeat: no-repeat;
@@ -78,6 +78,7 @@ body {
     background-size: cover;
 }
 
+/* Design delete button */
 .btn {
     background-color: DodgerBlue;
     border: none;
@@ -92,10 +93,12 @@ body {
         background-color: RoyalBlue;
     }
 
+    /* Design Flight-Details background */
 .data {
     background-color: plum;
 }
 
+/* Design error window */
 #snackbar {
     position: -webkit-sticky;
     position: fixed;
@@ -167,4 +170,20 @@ body {
         bottom: 0;
         opacity: 0;
     }
+}
+
+/* Design page */
+.content {
+    left: 10%;
+    max-width: 100%;
+    Margin-left: 3%;
+    margin-right: 3%;
+}
+
+#header1 {
+    text-align: center;
+}
+
+#flightDet {
+    Margin-left: 1%;
 }

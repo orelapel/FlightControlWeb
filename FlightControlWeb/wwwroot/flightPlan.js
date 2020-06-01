@@ -38,6 +38,7 @@ function successFlightPlan(flightPlan) {
     let dateTime = new Date(flightPlan.initial_Location.date_Time);
 
     let endLocation = document.getElementById("endLocation");
+    // Calculate the end latitude and longitude.
     for (let i = 0, seg; seg = flightPlan.segments[i]; i++) {
         dateTime.setSeconds(dateTime.getSeconds() + seg.timespan_Seconds);
         if (i == flightPlan.segments.length - 1) {
