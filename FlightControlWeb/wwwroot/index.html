@@ -1,659 +1,182 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <title>Flight Control Web</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8" />
-    <title></title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <!-- Add icon delete library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-    <style>
 
-
-        * {
-            box-sizing: border-box;
-        }
-
-        /* Create two equal columns that floats next to each other */
-        .column {
-            float: left;
-            height: 60%;
-            width: 50%;
-            padding: 10px;
-        }
-
-        /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        /* Create smaller columns that floats next to each other */
-        .columnt1 {
-            float: left;
-            width: 25%;
-            padding: 10px;
-        }
-
-        /* Create tables */
-        table {
-            width: 100%;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        table#t01 tr:nth-child() {
-            background-color: #eee;
-        }
-
-        table#t01 th {
-            background-color: #87CEFA;
-            color: black;
-        }
-
-        table#t02 th {
-            background-color: #87CEFA;
-            color: black;
-        }
-
-        table#t02 tr:nth-child() {
-            background-color: #eee;
-        }
-
-        .btn {
-            background-color: DodgerBlue;
-            border: none;
-            color: white;
-            padding: 12px 16px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-            /* Darker background on mouse-over */
-            .btn:hover {
-                background-color: RoyalBlue;
-            }
-
-        .data {
-            background-color: plum;
-        }
-
-        /* Create map */
-        #map {
-            padding: 10px;
-            width: 50%;
-            height: 50%;
-            zoom: 1;
-            position: absolute;
-            top: 10px;
-            bottom: 0;
-            left: 0;
-            right: 0
-        }
-    </style>
+    <!-- Refernce to style -->
+    <link rel="stylesheet" type="text/css" href="StyleSheet.css" />
 </head>
 <body>
+    <div class="w3-content" style="max-width:1400px">
 
-    <div class="row">
-        <div class="column" style="background-color:#4cff00;">
-            <div id="map"></div>
-        </div>
-        <div class="column" style="background-color:#bbb;">
-            <h2>My Flights</h2>
-            <table id="t01">
-                <tr>
-                    <th>Flight Id</th>
-                    <th>Company Name</th>
-                    <th>Delete</th>
-                </tr>
-                <!--enter flights by server-->
-            </table>
+        <!-- Header -->
+        <header class="w3-container w3-center w3-padding-28">
+            <h1><b>Flight Control</b></h1>
+            <p>By Orel, Noa, Eden and Reut</p>
+        </header>
 
-            <h2>External Flights</h2>
-            <table id="t02" scrolling="yes">
-                <tr>
-                    <th>Flight Id</th>
-                    <th>Company Name</th>
-                </tr>
-                <!--<tr onClick="HighLightTR(this,'#d25dbb');">
-                    <td>Jill</td>
-                    <td>Smith</td>
-                </tr>
-                <tr onClick="HighLightTR(this,'#d25dbb');">
-                    <td>Eve</td>
-                    <td>Jackson</td>
-                </tr>
-                <tr onClick="HighLightTR(this,'#d25dbb');">
-                    <td>John</td>
-                    <td>Doe</td>
-                </tr>-->
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="FlightDetails">
-            <div class="columnt1">
-                <h3>Flight Details</h3>
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    Flight Id:
-                    <label class="data" type="text" id="flightId" readonly="readonly"></label>
+        <!-- Error message -->
+        <div id="snackbar"></div>
+
+        <!-- Grid -->
+        <div class="w3-row">
+
+            <div class="w3-col l6 s12">
+                <!-- Map -->
+                <div class="w3-card-4 w3-margin w3-white">
+                    <div class="w3-container">
+                        <h3><b>Map</b></h3>
+                        <div id="map"></div>
+                        <br />
+                    </div>
                 </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    Company Name:
-                    <label class="data" type="text" id="companyName" readonly="readonly"></label>
+                <hr>
+
+                <!-- Flight details -->
+                <div class="w3-card-4 w3-margin w3-white">
+                    <div class="w3-container">
+                        <h3><b>Flight Details</b></h3>
+                        <div class="row">
+                            <div class="row">
+                                <div class="column left">
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        Flight Id:
+                                        <label class="data" type="text" id="flightId"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        Company Name:
+                                        <label class="data" type="text" id="companyName"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        Number Of Passengers:
+                                        <label class="data" type="text" id="passengers"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        External Flight:
+                                        <label class="data" type="text" id="externalFlight"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="column right">
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        Initial Location:
+                                        <label class="data" type="text" id="initialLocation"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        End Location:
+                                        <label class="data" type="text" id="endLocation"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        Initial Date Time:
+                                        <label class="data" type="text" id="initialDateTime"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <i class='fas fa-plane'></i>
+                                        End Date Time:
+                                        <label class="data" type="text" id="endDateTime"
+                                               readonly="readonly"></label>
+                                    </div>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    Number Of Passengers:
-                    <label class="data" type="text" id="passengers" readonly="readonly"></label>
+                <hr>
+            </div>
+
+            <div class="w3-col l6">
+                <!-- My Flights -->
+                <div class="w3-card w3-margin w3-margin-top">
+                    <div class="w3-container w3-white">
+                        <h3><b>My Flights</b></h3>
+                        <table id="t01">
+                            <tr>
+                                <th>Flight Id</th>
+                                <th>Company Name</th>
+                                <th>Delete</th>
+                            </tr>
+                            <!--enter flights by server-->
+                        </table>
+                        <br />
+                    </div>
+                </div><hr>
+
+                <!-- External Flights -->
+                <div class="w3-card w3-margin">
+                    <div class="w3-container w3-white">
+                        <h3><b>External Flights</b></h3>
+                        <table id="t02" scrolling="yes">
+                            <tr>
+                                <th>Flight Id</th>
+                                <th>Company Name</th>
+                            </tr>
+                        </table>
+                        <br />
+                    </div>
                 </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    External Flight:
-                    <label class="data" type="text" id="externalFlight" readonly="readonly"></label>
+                <hr>
+
+                <!-- Accept Json File-->
+                <div class="w3-card-4 w3-margin w3-white">
+                    <div class="w3-container">
+                        <h3><b>Upload file</b></h3>
+                        <form class="my-form" method="post" action="/">
+                            <label class="button" for="fileItem">select files</label>
+                            <input type="file" id="fileItem" accept="/application/json">
+                            <!-- READ FILE BUTTON -->
+                            <input type="button" id="submition" value="submit"
+                                   onclick="readFiles()" />
+                        </form>
+                        <br />
+                    </div>
                 </div>
             </div>
-            <div class="columnt1">
-                <br /> <br /> <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    Initial Location:
-                    <label class="data" type="text" id="initialLocation" readonly="readonly"></label>
-                </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    End Location:
-                    <label class="data" type="text" id="endLocation" readonly="readonly"></label>
-                </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    Initial Date Time:
-                    <label class="data" type="text" id="initialDateTime" readonly="readonly"></label>
-                </div>
-                <br />
-                <div class="row">
-                    <i class='fas fa-plane'></i>
-                    End Date Time:
-                    <label class="data" type="text" id="endDateTime" readonly="readonly"></label>
-                </div>
-            </div>
+            <!-- END GRID -->
         </div>
     </div>
-    <div class="row">
-        <form class="my-form" method="post" action="/">
-            <h3>upload file</h3>
-            <label class="button" for="fileItem">select files</label>
-            <input type="file" id="fileItem" accept="/application/json">
-            <!-- READ FILE BUTTON -->
-            <input type="button" id="submition" value="submit" onclick="readFiles()" />
-        </form>
-    </div>
-    <script>
-        let map = L.map('map').setView([0, 0], 1);
 
-        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=JZeDrYmO2BGmKe83fmkO', {
-            attribiution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-        }).addTo(map);
-
-        // Create airplane icon.
-        let airplaneIcon = L.Icon.extend({
-            options: {
-                // size of the icon
-                iconSize: [35, 50],
-                // point from which the popup should open relative to the iconAnchor
-                //popupAnchor: [-3, -76]
-            }
-        });
-
-        let airplane1 = new airplaneIcon({ iconUrl: 'airplane.png' }),
-            airplane2 = new airplaneIcon({ iconUrl: 'purpleAirplane.png' });
-
-        function addNewPlaneToMap(latitude, longitude, layer, layer1) {
-            //let layer = L.marker([latitude, longitude], { icon: airplane1 });
-            //let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
-            //layer.layerID = idFlight;
-            layer.addTo(map);
-
-            // After clicking on the airplane, change it's color.
-            layer.on('click', function (ev) {
-                allBlue();
-                showChosenFlight(layer.layerID);
-            });
-
-            // After clicking on the map, change the airplane color back.
-            map.on('click', function () {
-                allBlue();
-                removeShownChosenFlight(layer1.layerID);
-            });
-        }
-
-        function allGray() {
-            let listLayer = planesMap.values();
-            for (let layer of listLayer) {
-                let id = layer.layerID;
-                let isIn = id.indexOf("@");
-                if (isIn == -1) {
-                    HighLightTR(id, '#bbb');
-                }
-            }
-        }
-
-        function allBlue() {
-            let listLayer = planesMap.values();
-            for (let layer of listLayer) {
-                let id = layer.layerID;
-                let isIn = id.indexOf("@");
-                if (isIn == -1) {
-                    let id1 = id + "@";
-                    let layer1 = planesMap.get(id1);
-                    changePlaneColorBack(layer, layer1);
-                    clearMap();
-                }
-            }
-        }
-
-        function changePlaneColor(layer, layer1) {
-            layer.remove();
-            // The same position, color change.
-            layer1.addTo(map);
-        }
-
-        function changePlaneColorBack(layer, layer1) {
-            layer1.remove();
-            layer.addTo(map);
-        }
-
-        function removeShownChosenFlight(idFlight) {
-            removeFlightDetails();
-            HighLightTR(idFlight, '#bbb');
-            clearMap();
-        }
-
-        function removePlane(idFlight) {
-            //Remove plane from map.
-            layer = planesMap.get(idFlight);
-            layer.remove();
-            layer1 = planesMap.get(idFlight + "@");
-            layer1.remove();
-        }
-    </script>
-
-    <script>
-        // Delete flight button
-        function deleteRow(idFlight, button) {
-            let i = button.parentNode.parentNode.rowIndex;
-            document.getElementById("t01").deleteRow(i);
-            let idTable = document.getElementById("flightId").innerText;
-            if (idFlight == idTable) {
-                removeFlightDetails();
-            }
-
-            // Remove from server.
-            deleteFlightPlan(idFlight);
-
-            // Remove plane from map.
-            removePlane(idFlight);
-            planesMap.delete(idFlight);
-
-            // Remove plane path from map.
-            clearMap();
-        }
-
-        // Highlight row after clicking it
-        let preEl;
-        let orgBColor;
-        let orgTColor;
-        function HighLightTR(el, backColor) {
-            let row = document.getElementById(el);
-            if (backColor == "#d25dbb") {
-                orgBColor = row.bgColor;
-                orgTColor = row.style.color;
-                row.bgColor = backColor;
-                preEl = row
-            } else {
-                if (typeof (preEl) != 'undefined') {
-                    preEl.bgColor = orgBColor;
-                }
-            }
-
-        }
-    </script>
-
-    <script>
-        function addRoute(flightPlan) {
-            var latlngs = [
-                [flightPlan.initial_Location.latitude, flightPlan.initial_Location.longitude]];
-            for (var i = 0, seg; seg = flightPlan.segments[i]; i++) {
-                var coordinate = [seg.latitude, seg.longitude];
-                latlngs.push(coordinate);
-            }
-            var polyline = L.polyline(latlngs, { color: 'plum' }).addTo(map);
-            map.fitBounds(polyline.getBounds());
-        }
-        function clearMap() {
-            for (i in map._layers) {
-                if (map._layers[i]._path != undefined) {
-                    try {
-                        map.removeLayer(map._layers[i]);
-                    }
-                    catch (e) {
-                        console.log("problem with " + e + map._layers[i]);
-                    }
-                }
-            }
-        }
-    </script>
-
-    <script>
-        function postFlight(jsonString) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", 'api/FlightPlan', true);
-
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    // Request finished. Do processing here.
-                }
-            }
-            xhr.send(jsonString);
-        }
-
-        function readFiles() {
-            let file = document.getElementById("fileItem").files[0];
-            let reader = new FileReader();
-
-            reader.readAsText(file);
-
-            var dataString;
-            reader.onload = function () {
-                dataString = reader.result.replace('/r', '');
-                postFlight(dataString);
-            };
-
-            reader.onerror = function () {
-                alert(reader.error);
-            };
-        }
-    </script>
-
+    <!--Web functionality-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- GET/api/Flights?relative_to=<DATE_TIME>-->
-    <script>
-        // Create map for planes and their ID's.
-        let planesMap = new Map();
-        let count = 1;
 
-        $(document).ready(function () {
-            //getFlights();
-            getAllFlights();
-            setInterval(function () {
-                //getFlights();
-                getAllFlights();
-            }, 3000);
-        });
+    <script src="main.js"></script>
+    <script src="map.js"></script>
+    <script src="postFlight.js"></script>
+    <script src="flightsTable.js"></script>
+    <script src="innerFlights.js"></script>
+    <script src="flightPlan.js"></script>
+    <script src="delete.js"></script>
+    <script src="allFlights.js"></script>
+    <script src="error.js"></script>
 
-        function getFlights() {
-            let d = new Date(Date().toString('en-US', { timeZone: "Etc/GMT-0" }));
-            let piece = d.toISOString();
-            let end = piece.length - 5;
-            let date = piece.substring(0, end);
-            date = date + 'Z';
-            let url = "/api/Flights?relative_to=" + date;
-
-            $.ajax({
-                type: "GET",
-                url: url,
-                datatype: 'json',
-                success: successGetFlights,
-                error: function () {
-                    alert("Error getFlights");
-                }
-            });
-        }
-
-        function successGetFlights(flights) {
-            flights.forEach(function (flight, i) {
-                // Get flight id.
-                let idFlight = flight.flight_Id;
-
-                // Get flight current location.
-                let longitude = flight.longitude;
-                let latitude = flight.latitude;
-
-                if (!planesMap.has(idFlight)) {
-                    // Create airplains icons.
-                    let layer = L.marker([latitude, longitude], { icon: airplane1 });
-                    layer.layerID = idFlight;
-                    let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
-                    layer1.layerID = idFlight + "@";
-
-                    // Add to planesMap.
-                    planesMap.set(idFlight, layer);
-                    planesMap.set(idFlight + "@", layer1);
-                    if (!flight.is_External) {
-                        $('#t01').append('<tr onClick="showChosenFlight(id)" id="' + idFlight + '"><td>' + idFlight + '</td><td> '
-                            + flight.company_Name + '</td><td id="deleteButton"><button type="button" class="btn" value="Delete" id="' + "deleteRow" + count +
-                            '"><span class="fa fa-close"></span><span class="submit - text"> Delete</span></button></td></tr>');
-                    }
-                    let x = document.getElementById("deleteRow" + count);
-                    x.addEventListener("click", function () {
-                        deleteRow(idFlight, x);
-                    });
-                    count = count + 1;
-
-                    // add plane to map.
-                    addNewPlaneToMap(latitude, longitude, layer, layer1);
-                } else {
-                    let layer = planesMap.get(idFlight);
-                    let layer1 = planesMap.get(idFlight + "@");
-                    layer.setLatLng([latitude, longitude]);
-                    layer1.setLatLng([latitude, longitude]);
-                }
-            });
-        }
-
-        function showChosenFlight(idFlight) {
-
-            // when click on row of flight - change color.
-            allGray();
-            HighLightTR(idFlight, '#d25dbb');
-            getFlightPlan(idFlight);
-
-            // get plane from map and change its color.
-            allBlue();
-            layer = planesMap.get(idFlight);
-            layer1 = planesMap.get(idFlight + "@");
-
-            changePlaneColor(layer, layer1);
-            // TODO: show flight path
-        }
-    </script>
-    <!-- GET/api/flightPlans-->
-    <script>
-        function getFlightPlan(idFlight) {
-            let flightId = document.getElementById("flightId");
-            flightId.innerText = idFlight;
-
-            let url = "/api/FlightPlan/" + idFlight;
-            $.ajax({
-                type: "GET",
-                url: url,
-                contentType: "applicition/json",
-                success: successFlightPlan,
-                error: function () {
-                    alert("Error getFlightPlan");
-                }
-            });
-        }
-
-        function successFlightPlan(flightPlan) {
-            let companyName = document.getElementById("companyName");
-            companyName.innerText = flightPlan.company_Name;
-
-            let numPassengers = document.getElementById("passengers");
-            numPassengers.innerText = flightPlan.passengers;
-
-            let isExternal = document.getElementById("externalFlight");
-            if (flightPlan.is_External) {
-                isExternal.innerText = "Yes";
-            } else {
-                isExternal.innerText = "No";
-            }
-
-            let initialLocation = document.getElementById("initialLocation");
-            initialLocation.innerText = flightPlan.initial_Location.latitude.toString() +
-                ', ' + flightPlan.initial_Location.longitude.toString();
-
-            let dateTime = new Date(flightPlan.initial_Location.date_Time);
-
-            let endLocation = document.getElementById("endLocation");
-            for (var i = 0, seg; seg = flightPlan.segments[i]; i++) {
-                dateTime.setSeconds(dateTime.getSeconds() + seg.timespan_Seconds);
-                if (i == flightPlan.segments.length - 1) {
-                    endLocation.innerText = flightPlan.segments[i].latitude.toString() +
-                        ', ' + flightPlan.segments[i].longitude.toString();
-                }
-            }
-
-            let initialDateTime = document.getElementById("initialDateTime");
-            initialDateTime.innerText = dateTime.toUTCString();
-
-            let endDateTime = document.getElementById("endDateTime");
-            endDateTime.innerText = dateTime.toUTCString();
-
-            addRoute(flightPlan);
-        }
-    </script>
-
-    <!--POST/api/FlightPlan-->
-    <script>
-        function postFlightPlan() {
-            let url = "/api/FlightPlan";
-            $.ajax({
-                type: "POST",
-                url: url,
-                contentType: "applicition/json",
-                success: successGetFlights,
-                error: function () {
-                    alert("Error getFlightPlan");
-                }
-            });
-        }
-    </script>
-
-    <!--DELETE/api/Flights-->
-    <script>
-        function deleteFlightPlan(idFlight) {
-            let url = "/api/Flights/" + idFlight;
-            $.ajax({
-                url: url,
-                type: 'DELETE',
-                success: function (result) {
-                    console.log(result);
-                }
-            });
-        }
-
-        function removeFlightDetails() {
-            // Remove the details of the chosen flight.
-            $('label[id*="flightId"]').text('');
-            $('label[id*="companyName"]').text('');
-            $('label[id*="passengers"]').text('');
-            $('label[id*="externalFlight"]').text('');
-            $('label[id*="initialLocation"]').text('');
-            $('label[id*="endLocation"]').text('');
-            $('label[id*="initialDateTime"]').text('');
-            $('label[id*="endDateTime"]').text('');
-        }
-
-    </script>
-
-    <!-- GET/api/Flights?relative_to=<DATE_TIME>&sync_all-->
-    <script>
-
-        function getAllFlights() {
-            let d = new Date(Date().toString('en-US', { timeZone: "Etc/GMT-0" }));
-            let piece = d.toISOString();
-            let end = piece.length - 5;
-            let date = piece.substring(0, end);
-            date = date + 'Z';
-            let url = "/api/Flights?relative_to=" + date + "&sync_all";
-
-            $.ajax({
-                type: "GET",
-                url: url,
-                datatype: 'json',
-                success: successGetAllFlights,
-                error: function () {
-                    alert("Error getAllFlights");
-                }
-            });
-        }
-
-        function successGetAllFlights(flights) {
-            flights.forEach(function (flight, i) {
-                // Get flight id.
-                let idFlight = flight.flight_Id;
-
-                // Get flight current location.
-                let longitude = flight.longitude;
-                let latitude = flight.latitude;
-
-                if (!planesMap.has(idFlight)) {
-                    // Create airplains icons.
-                    let layer = L.marker([latitude, longitude], { icon: airplane1 });
-                    layer.layerID = idFlight;
-                    let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
-                    layer1.layerID = idFlight + "@";
-
-                    // Add to planesMap.
-                    planesMap.set(idFlight, layer);
-                    planesMap.set(idFlight + "@", layer1);
-                    if (!flight.is_External) {
-                        $('#t01').append('<tr id="' + idFlight + '"><td onClick="showChosenFlight(id)" id="' + idFlight + '">' + idFlight + '</td><td onClick="showChosenFlight(id)" id="' + idFlight + '"> '
-                            + flight.company_Name + '</td><td id="deleteButton"><button type="button" class="btn" value="Delete" id="' + "deleteRow" + count +
-                            '"><span class="fa fa-close"></span><span class="submit - text"> Delete</span></button></td></tr>');
-                    } else {
-                        $('#t02').append('<tr onClick="showChosenFlight(id)" id="' + idFlight + '"><td>' + idFlight + '</td><td> '
-                            + flight.company_Name + '</td></tr>');
-                    }
-
-                    let x = document.getElementById("deleteRow" + count);
-                    if (x != null) {
-                        x.addEventListener("click", function () {
-                            deleteRow(idFlight, x);
-                        });
-                    }
-                    count = count + 1;
-
-                    // add plane to map.
-                    addNewPlaneToMap(latitude, longitude, layer, layer1);
-                } else {
-                    let layer = planesMap.get(idFlight);
-                    let layer1 = planesMap.get(idFlight + "@");
-                    layer.setLatLng([latitude, longitude]);
-                    layer1.setLatLng([latitude, longitude]);
-                }
-            });
-        }
-    </script>
 </body>
 </html>
