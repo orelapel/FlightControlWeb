@@ -20,23 +20,45 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/servers
         [HttpGet]
-        public List<Server> GetAllServers()
+        public ActionResult<List<Server>> GetAllServers()
         {
-            return flightManager.GetAllServer();
+            List<Server> servers;
+            try
+            {
+                servers = flightManager.GetAllServer();
+            } catch
+            {
+                return BadRequest("Problem in GetAllServers");
+            }
+            return servers;
         }
 
         // POST: api/servers
         [HttpPost]
-        public void AddServer([FromBody] Server server)
+        public ActionResult<string> AddServer([FromBody] Server server)
         {
-            flightManager.AddServer(server);
+            try
+            {
+                flightManager.AddServer(server);
+            } catch
+            {
+                return BadRequest("Problem add this server");
+            }
+            return Ok("success add this server");
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void DeleteServer(string id)
+        public ActionResult<string> DeleteServer(string id)
         {
-            flightManager.DeleteServerByID(id);
+            try
+            {
+                flightManager.DeleteServerByID(id);
+            } catch
+            {
+                return BadRequest("Problem delete this server");
+            }
+            return Ok("success delete this server");
         }
     }
 }

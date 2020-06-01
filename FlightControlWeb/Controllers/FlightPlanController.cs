@@ -22,16 +22,31 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/FlightPlan/"id"
         [HttpGet("{id}", Name = "Get")]
-        public async Task<FlightPlan> GetFlightPlan(string id)
+        public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
-           return await flightManager.GetFlightPlanById(id);
+            FlightPlan flightPlan;
+            try
+            {
+                flightPlan = await flightManager.GetFlightPlanById(id);
+            } catch
+            {
+                return BadRequest("There is no flight plan with this id");
+            }
+            return Ok(flightPlan);
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public FlightPlan AddFlightPlan([FromBody] FlightPlan flightPlan)
+        public ActionResult<string> AddFlightPlan([FromBody] FlightPlan flightPlan)
         {
-            return flightManager.AddFlightPlan(flightPlan);
+            try
+            {
+                flightManager.AddFlightPlan(flightPlan);
+            } catch
+            {
+                return BadRequest("failed add flight plan");
+            }
+            return Ok("success add flight plan");
         }
     }
 }

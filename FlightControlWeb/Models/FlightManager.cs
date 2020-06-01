@@ -23,8 +23,8 @@ namespace FlightControlWeb.Models
         
         public FlightManager()
         {
-            AddServer(new Server { ServerId = "1", ServerURL = "http://ronyut3.atwebpages.com/ap2" });
-            AddServer(new Server { ServerId = "2", ServerURL = "http://ronyut4.atwebpages.com/ap2" });
+            AddServer(new Server { ServerId = "1", ServerURL = "http://rony1.atwebpages.com" });
+            AddServer(new Server { ServerId = "2", ServerURL = "http://rony2.atwebpages.com" });
 
             List<Segment> segments1 = new List<Segment>()
             {
@@ -32,11 +32,14 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=75,Latitude=75.34,Timespan_Seconds=550 },
                 new Segment{Longitude=80,Latitude=80,Timespan_Seconds=1000 }
             };
-            FlightPlan flightPlan1 = new FlightPlan 
-            { Segments =segments1, Passengers = 120, Company_Name = "OrelFlightsLtd", 
-                Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" } };
+            FlightPlan flightPlan1 = new FlightPlan
+            {
+                Segments = segments1,
+                Passengers = 120,
+                Company_Name = "OrelFlightsLtd",
+                Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" }
+            };
             AddFlightPlan(flightPlan1);
-
 
 
             List<Segment> segments2 = new List<Segment>()
@@ -45,9 +48,13 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=40,Latitude=41.39,Timespan_Seconds=550 },
                 new Segment{Longitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan2 = new FlightPlan 
-            { Segments = segments2,Passengers = 270, Company_Name = "EL-AL", 
-                Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" } };
+            FlightPlan flightPlan2 = new FlightPlan
+            {
+                Segments = segments2,
+                Passengers = 270,
+                Company_Name = "EL-AL",
+                Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" }
+            };
             AddFlightPlan(flightPlan2);
             //new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
 
@@ -57,9 +64,13 @@ namespace FlightControlWeb.Models
                 new Segment{Longitude=79,Latitude=80,Timespan_Seconds=550 },
                 new Segment{Longitude=89,Latitude=89,Timespan_Seconds=550 }
             };
-            FlightPlan flightPlan3 = new FlightPlan 
-            { Segments = segments3 ,Passengers = 150, Company_Name = "NoaFlightLtd", 
-                Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" } };
+            FlightPlan flightPlan3 = new FlightPlan
+            {
+                Segments = segments3,
+                Passengers = 150,
+                Company_Name = "NoaFlightLtd",
+                Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" }
+            };
             AddFlightPlan(flightPlan3);
 
         }
@@ -194,6 +205,14 @@ namespace FlightControlWeb.Models
             HttpWebResponse responseObjGet = null;
             // Get the response from server.
             responseObjGet = (HttpWebResponse)await requestObjGet.GetResponseAsync();
+            //try
+            //{
+            //    responseObjGet = (HttpWebResponse)await requestObjGet.GetResponseAsync();
+            //} catch
+            //{
+            //    return null;
+            //}
+            
 
             // Return response to string (json).
             string strResult = null;
@@ -228,7 +247,6 @@ namespace FlightControlWeb.Models
                 // Send request to this server.
                 string request = server.Value.ServerURL + "/api/FlightPlan/" + id;
                 FlightPlan serverFlightPlan = await GetFlightPlanFromServer(request);
-                // check if there is more effective check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // Check if this flight exist in this server.
                 if (serverFlightPlan.Company_Name != null)
                 {
