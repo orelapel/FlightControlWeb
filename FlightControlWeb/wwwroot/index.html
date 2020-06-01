@@ -126,18 +126,18 @@
                     <th>Flight Id</th>
                     <th>Company Name</th>
                 </tr>
-                <tr onClick="HighLightTR(this,'#d25dbb');">
-                    <!--<td>Jill</td>
-                    <td>Smith</td>-->
+                <!--<tr onClick="HighLightTR(this,'#d25dbb');">
+                    <td>Jill</td>
+                    <td>Smith</td>
                 </tr>
                 <tr onClick="HighLightTR(this,'#d25dbb');">
-                    <!--<td>Eve</td>
-                    <td>Jackson</td>-->
+                    <td>Eve</td>
+                    <td>Jackson</td>
                 </tr>
                 <tr onClick="HighLightTR(this,'#d25dbb');">
-                    <!--<td>John</td>
-                    <td>Doe</td>-->
-                </tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                </tr>-->
             </table>
         </div>
     </div>
@@ -227,7 +227,6 @@
             airplane2 = new airplaneIcon({ iconUrl: 'purpleAirplane.png' });
 
         function addNewPlaneToMap(latitude, longitude, layer, layer1) {
-
             //let layer = L.marker([latitude, longitude], { icon: airplane1 });
             //let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
             //layer.layerID = idFlight;
@@ -235,20 +234,41 @@
 
             // After clicking on the airplane, change it's color.
             layer.on('click', function (ev) {
+                allBlue();
                 showChosenFlight(layer.layerID);
             });
 
             // After clicking on the map, change the airplane color back.
             map.on('click', function () {
+                allBlue();
                 removeShownChosenFlight(layer1.layerID);
-                changePlaneColorBack(layer, layer1);
             });
         }
 
-        //function moveMarker(marker, lat, lon) {
-        //    let newLatLng = new L.LatLng(lat, lon);
-        //    marker.setLatLng(newLatLng).update();
-        //}
+        function allGray() {
+            let listLayer = planesMap.values();
+            for (let layer of listLayer) {
+                let id = layer.layerID;
+                let isIn = id.indexOf("@");
+                if (isIn == -1) {
+                    HighLightTR(id, '#bbb');
+                }
+            }
+        }
+
+        function allBlue() {
+            let listLayer = planesMap.values();
+            for (let layer of listLayer) {
+                let id = layer.layerID;
+                let isIn = id.indexOf("@");
+                if (isIn == -1) {
+                    let id1 = id + "@";
+                    let layer1 = planesMap.get(id1);
+                    changePlaneColorBack(layer, layer1);
+                    clearMap();
+                }
+            }
+        }
 
         function changePlaneColor(layer, layer1) {
             layer.remove();
@@ -262,15 +282,16 @@
         }
 
         function removeShownChosenFlight(idFlight) {
-            HighLightTR(idFlight, '#bbb');
             removeFlightDetails();
+            HighLightTR(idFlight, '#bbb');
+            clearMap();
         }
 
         function removePlane(idFlight) {
             //Remove plane from map.
             layer = planesMap.get(idFlight);
             layer.remove();
-            layer1 = planesMap.get(idFlight + "1");
+            layer1 = planesMap.get(idFlight + "@");
             layer1.remove();
         }
     </script>
@@ -278,10 +299,12 @@
     <script>
         // Delete flight button
         function deleteRow(idFlight, button) {
-            var i = button.parentNode.parentNode.rowIndex;
+            let i = button.parentNode.parentNode.rowIndex;
             document.getElementById("t01").deleteRow(i);
-
-            removeFlightDetails();
+            let idTable = document.getElementById("flightId").innerText;
+            if (idFlight == idTable) {
+                removeFlightDetails();
+            }
 
             // Remove from server.
             deleteFlightPlan(idFlight);
@@ -289,22 +312,53 @@
             // Remove plane from map.
             removePlane(idFlight);
             planesMap.delete(idFlight);
+
+            // Remove plane path from map.
+            clearMap();
         }
 
         // Highlight row after clicking it
-        var preEl;
-        var orgBColor;
-        var orgTColor;
+        let preEl;
+        let orgBColor;
+        let orgTColor;
         function HighLightTR(el, backColor) {
             let row = document.getElementById(el);
-            if (typeof (preEl) != 'undefined') {
-                preEl.bgColor = orgBColor;
+            if (backColor == "#d25dbb") {
+                orgBColor = row.bgColor;
+                orgTColor = row.style.color;
+                row.bgColor = backColor;
+                preEl = row
+            } else {
+                if (typeof (preEl) != 'undefined') {
+                    preEl.bgColor = orgBColor;
+                }
             }
 
-            orgBColor = row.bgColor;
-            orgTColor = row.style.color;
-            row.bgColor = backColor;
-            preEl = row;
+        }
+    </script>
+
+    <script>
+        function addRoute(flightPlan) {
+            var latlngs = [
+                [flightPlan.initial_Location.latitude, flightPlan.initial_Location.longitude]];
+            for (var i = 0, seg; seg = flightPlan.segments[i]; i++) {
+                var coordinate = [seg.latitude, seg.longitude];
+                latlngs.push(coordinate);
+            }
+            var polyline = L.polyline(latlngs, { color: 'plum' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+        }
+        function clearMap() {
+            for (i in map._layers) {
+                if (map._layers[i]._path != undefined) {
+                    try {
+                        map.removeLayer(map._layers[i]);
+                    }
+                    catch (e) {
+                        console.log("problem with " + e + map._layers[i]);
+                    }
+                }
+            }
         }
     </script>
 
@@ -341,21 +395,28 @@
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- GET/api/Flights?relative_to=<DATE_TIME>-->
     <script>
         // Create map for planes and their ID's.
         let planesMap = new Map();
         let count = 1;
 
         $(document).ready(function () {
-            getFlights();
+            //getFlights();
+            getAllFlights();
             setInterval(function () {
-                getFlights();
+                //getFlights();
+                getAllFlights();
             }, 3000);
         });
 
         function getFlights() {
             let d = new Date(Date().toString('en-US', { timeZone: "Etc/GMT-0" }));
-            let url = "/api/Flights?relative_to=" + d.toISOString();
+            let piece = d.toISOString();
+            let end = piece.length - 5;
+            let date = piece.substring(0, end);
+            date = date + 'Z';
+            let url = "/api/Flights?relative_to=" + date;
 
             $.ajax({
                 type: "GET",
@@ -382,12 +443,12 @@
                     let layer = L.marker([latitude, longitude], { icon: airplane1 });
                     layer.layerID = idFlight;
                     let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
-                    layer1.layerID = idFlight;
+                    layer1.layerID = idFlight + "@";
 
                     // Add to planesMap.
                     planesMap.set(idFlight, layer);
-                    planesMap.set(idFlight + "1", layer1);
-                    if (!flight.is_external) {
+                    planesMap.set(idFlight + "@", layer1);
+                    if (!flight.is_External) {
                         $('#t01').append('<tr onClick="showChosenFlight(id)" id="' + idFlight + '"><td>' + idFlight + '</td><td> '
                             + flight.company_Name + '</td><td id="deleteButton"><button type="button" class="btn" value="Delete" id="' + "deleteRow" + count +
                             '"><span class="fa fa-close"></span><span class="submit - text"> Delete</span></button></td></tr>');
@@ -402,7 +463,7 @@
                     addNewPlaneToMap(latitude, longitude, layer, layer1);
                 } else {
                     let layer = planesMap.get(idFlight);
-                    let layer1 = planesMap.get(idFlight + "1");
+                    let layer1 = planesMap.get(idFlight + "@");
                     layer.setLatLng([latitude, longitude]);
                     layer1.setLatLng([latitude, longitude]);
                 }
@@ -410,13 +471,16 @@
         }
 
         function showChosenFlight(idFlight) {
+
             // when click on row of flight - change color.
+            allGray();
             HighLightTR(idFlight, '#d25dbb');
             getFlightPlan(idFlight);
 
             // get plane from map and change its color.
+            allBlue();
             layer = planesMap.get(idFlight);
-            layer1 = planesMap.get(idFlight + "1");
+            layer1 = planesMap.get(idFlight + "@");
 
             changePlaneColor(layer, layer1);
             // TODO: show flight path
@@ -455,8 +519,8 @@
             }
 
             let initialLocation = document.getElementById("initialLocation");
-            initialLocation.innerText = flightPlan.initial_Location.longitude.toString() +
-                ', ' + flightPlan.initial_Location.latitude.toString();
+            initialLocation.innerText = flightPlan.initial_Location.latitude.toString() +
+                ', ' + flightPlan.initial_Location.longitude.toString();
 
             let dateTime = new Date(flightPlan.initial_Location.date_Time);
 
@@ -464,8 +528,8 @@
             for (var i = 0, seg; seg = flightPlan.segments[i]; i++) {
                 dateTime.setSeconds(dateTime.getSeconds() + seg.timespan_Seconds);
                 if (i == flightPlan.segments.length - 1) {
-                    endLocation.innerText = flightPlan.segments[i].longitude.toString() +
-                        ', ' + flightPlan.segments[i].latitude.toString();
+                    endLocation.innerText = flightPlan.segments[i].latitude.toString() +
+                        ', ' + flightPlan.segments[i].longitude.toString();
                 }
             }
 
@@ -474,6 +538,8 @@
 
             let endDateTime = document.getElementById("endDateTime");
             endDateTime.innerText = dateTime.toUTCString();
+
+            addRoute(flightPlan);
         }
     </script>
 
@@ -518,10 +584,76 @@
             $('label[id*="endDateTime"]').text('');
         }
 
-            // TODO: implement this!!!!!
-            //function successDeleteFlights(idFlight) {
-            //    deleteRow(idFlight);
-            //}
+    </script>
+
+    <!-- GET/api/Flights?relative_to=<DATE_TIME>&sync_all-->
+    <script>
+
+        function getAllFlights() {
+            let d = new Date(Date().toString('en-US', { timeZone: "Etc/GMT-0" }));
+            let piece = d.toISOString();
+            let end = piece.length - 5;
+            let date = piece.substring(0, end);
+            date = date + 'Z';
+            let url = "/api/Flights?relative_to=" + date + "&sync_all";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                datatype: 'json',
+                success: successGetAllFlights,
+                error: function () {
+                    alert("Error getAllFlights");
+                }
+            });
+        }
+
+        function successGetAllFlights(flights) {
+            flights.forEach(function (flight, i) {
+                // Get flight id.
+                let idFlight = flight.flight_Id;
+
+                // Get flight current location.
+                let longitude = flight.longitude;
+                let latitude = flight.latitude;
+
+                if (!planesMap.has(idFlight)) {
+                    // Create airplains icons.
+                    let layer = L.marker([latitude, longitude], { icon: airplane1 });
+                    layer.layerID = idFlight;
+                    let layer1 = L.marker([latitude, longitude], { icon: airplane2 });
+                    layer1.layerID = idFlight + "@";
+
+                    // Add to planesMap.
+                    planesMap.set(idFlight, layer);
+                    planesMap.set(idFlight + "@", layer1);
+                    if (!flight.is_External) {
+                        $('#t01').append('<tr id="' + idFlight + '"><td onClick="showChosenFlight(id)" id="' + idFlight + '">' + idFlight + '</td><td onClick="showChosenFlight(id)" id="' + idFlight + '"> '
+                            + flight.company_Name + '</td><td id="deleteButton"><button type="button" class="btn" value="Delete" id="' + "deleteRow" + count +
+                            '"><span class="fa fa-close"></span><span class="submit - text"> Delete</span></button></td></tr>');
+                    } else {
+                        $('#t02').append('<tr onClick="showChosenFlight(id)" id="' + idFlight + '"><td>' + idFlight + '</td><td> '
+                            + flight.company_Name + '</td></tr>');
+                    }
+
+                    let x = document.getElementById("deleteRow" + count);
+                    if (x != null) {
+                        x.addEventListener("click", function () {
+                            deleteRow(idFlight, x);
+                        });
+                    }
+                    count = count + 1;
+
+                    // add plane to map.
+                    addNewPlaneToMap(latitude, longitude, layer, layer1);
+                } else {
+                    let layer = planesMap.get(idFlight);
+                    let layer1 = planesMap.get(idFlight + "@");
+                    layer.setLatLng([latitude, longitude]);
+                    layer1.setLatLng([latitude, longitude]);
+                }
+            });
+        }
     </script>
 </body>
 </html>
