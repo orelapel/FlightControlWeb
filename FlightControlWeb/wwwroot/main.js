@@ -4,8 +4,8 @@ let planesMap = new Map();
 $(document).ready(function () {
     //getFlights();
     getAllFlights();
-    //setInterval(function () {
+    setInterval(function () {
         //getFlights();
-        //getAllFlights();
-    //}, 3000);
+        getAllFlights();
+    }, 3000);
 });
