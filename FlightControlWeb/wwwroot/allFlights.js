@@ -14,7 +14,7 @@ function getAllFlights() {
         datatype: 'json',
         success: successGetAllFlights,
         error: function () {
-            showError("Error getAllFlights");
+            showError("Error in getting inners and externals flights");
         }
     });
 }
@@ -40,18 +40,28 @@ function successGetAllFlights(flights) {
         if (iStillFlying == false) {
             // Delete both - flight and @.
             let x = document.getElementById("deleteRow" + id);
-            let i = x.parentNode.parentNode.rowIndex;
-            document.getElementById("t01").deleteRow(i);
-
+            if (x != null) {
+                let i = x.parentNode.parentNode.rowIndex;
+                document.getElementById("t01").deleteRow(i);
+            }
+            else {
+                x = document.getElementById(id);
+                let i = x.rowIndex;
+                document.getElementById("t02").deleteRow(i);
+            }
             // Remove plane from map.
             removePlane(id);
             planesMap.delete(id);
             planesMap.delete(id + "@");
 
+            // Remove flight plane.
+            removeFlightDetails();
+
             // Remove plane path from map.
             if (mark == id) {
                 removeRoute();
             }
+            mark = 0;
         }
     }
 
@@ -59,7 +69,6 @@ function successGetAllFlights(flights) {
     flights.forEach(function (flight, i) {
         // Get flight id.
         let idFlight = flight.flight_Id;
-
         // Get flight current location.
         let longitude = flight.longitude;
         let latitude = flight.latitude;
@@ -85,7 +94,7 @@ function successGetAllFlights(flights) {
                     + "deleteRow" + idFlight + '"><span class="fa fa-close"></span>'
                     + '<span class="submit - text"> Delete</span></button></td></tr>');
             } else {
-                $('#t02').append('<tr onClick="showChosenFlight(id)" id="' + idFlight + '"><td>'
+                $('#t02').append('<tr onClick = "showChosenFlight(id)" id = "' + idFlight + '" ><td >'
                     + idFlight + '</td><td> ' + flight.company_Name + '</td></tr>');
             }
 

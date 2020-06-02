@@ -14,5 +14,12 @@ namespace FlightControlWeb.Models
         public double Latitude { get; set; }
         [JsonProperty("timespan_seconds")]
         public double Timespan_Seconds { get; set; }
+
+        public Segment()
+        {
+            Longitude = 181;
+            Latitude = 91;
+            Timespan_Seconds = -1;
+        }
     }
 }

@@ -13,14 +13,13 @@ namespace FlightControlWeb.Models
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
         [JsonProperty("date_time")]
-        public string  Date_Time { get; set; }
+        public string Date_Time { get; set; }
 
-/*        public InitialLocation(double longitude,double latitude,DateTime dataTime)
+        public InitialLocation()
         {
-            this.longitude = longitude;
-            this.latitude = latitude;
-            this.dataTime = dataTime;
-        }*/
+            Longitude = 181;
+            Latitude = 91;
+        }
 
     }
 }

@@ -8,6 +8,9 @@ function deleteFlightPlan(idFlight) {
         type: 'DELETE',
         success: function (result) {
             console.log(result);
+        },
+        error: function () {
+            showError("Error in deleting flight");
         }
     });
 }
@@ -17,6 +20,7 @@ function deleteRow(idFlight, button) {
     // Remove plane path from map.
     if (mark == idFlight) {
         removeRoute();
+        mark = 0;
     }
 
     // Remove flight details.

@@ -14,7 +14,7 @@ function getFlights() {
         datatype: 'json',
         success: successGetFlights,
         error: function () {
-            showError("Error getFlights");
+            showError("Error in getting inner flights");
         }
     });
 }

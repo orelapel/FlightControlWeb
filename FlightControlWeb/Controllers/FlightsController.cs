@@ -20,7 +20,7 @@ namespace FlightControlWeb.Controllers
         }
         // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetAllFlights (string relative_to)
+        public async Task<ActionResult<IEnumerable<Flight>>> GetAllFlights(string relative_to)
         {
             // check if the request contains "sync_all"
             string request = Request.QueryString.Value;
@@ -29,7 +29,8 @@ namespace FlightControlWeb.Controllers
             try
             {
                 flights = await flightManager.GetAllFlight(relative_to, isExternal);
-            } catch
+            }
+            catch
             {
                 return BadRequest("Problem in GetAllFlights");
             }
@@ -43,7 +44,8 @@ namespace FlightControlWeb.Controllers
             try
             {
                 flightManager.DeleteFlight(id);
-            } catch
+            }
+            catch
             {
                 return BadRequest("Failed delete this flight");
             }

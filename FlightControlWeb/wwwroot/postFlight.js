@@ -5,7 +5,12 @@ function postFlight(jsonString) {
 
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status == 400 || this.status == 404 ||
+                this.status == 409 || this.status == 500) {
+                showError("File not a valid json");
+            } else if (this.status === 200) {
+            }
             // Request finished.
         }
     }
@@ -17,7 +22,11 @@ function readFiles() {
     let file = document.getElementById("fileItem").files[0];
     let reader = new FileReader();
 
-    reader.readAsText(file);
+    try {
+        reader.readAsText(file);
+    } catch {
+        showError("Cannot read file, try submit file again");
+    }
 
     let dataString;
     reader.onload = function () {

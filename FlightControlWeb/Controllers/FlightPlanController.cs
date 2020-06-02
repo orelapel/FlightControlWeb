@@ -28,7 +28,8 @@ namespace FlightControlWeb.Controllers
             try
             {
                 flightPlan = await flightManager.GetFlightPlanById(id);
-            } catch
+            }
+            catch
             {
                 return BadRequest("There is no flight plan with this id");
             }
@@ -39,10 +40,34 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public ActionResult<string> AddFlightPlan([FromBody] FlightPlan flightPlan)
         {
+            // Check if there is a problem in the json.
+            if (flightPlan.Company_Name == null || flightPlan.Initial_Location == null
+                || flightPlan.Segments == null
+                || flightPlan.Initial_Location.Date_Time == null
+                || flightPlan.Initial_Location.Latitude < -90
+                || flightPlan.Initial_Location.Latitude > 90
+                || flightPlan.Initial_Location.Longitude < -180
+                || flightPlan.Initial_Location.Longitude > 180
+                || flightPlan.Passengers < 0)
+            {
+                return BadRequest("this is not a valid flight plan");
+            }
+            foreach (Segment segment in flightPlan.Segments)
+            {
+                if (segment.Latitude < -90 || segment.Latitude > 90
+                    || segment.Longitude < -180 || segment.Longitude > 180
+                    || segment.Timespan_Seconds < 0)
+                {
+                    return BadRequest("this is not a valid flight plan");
+                }
+            }
+
+            // If the json is OK - add this flight plan.
             try
             {
                 flightManager.AddFlightPlan(flightPlan);
-            } catch
+            }
+            catch
             {
                 return BadRequest("failed add flight plan");
             }

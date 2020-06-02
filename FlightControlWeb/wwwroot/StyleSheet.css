@@ -54,12 +54,12 @@ table#t02 tr:nth-child() {
 /* Create two unequal columns that floats next to each other */
 
 .left {
-    width: 45%;
+    width: 50%;
     background-color: white;
 }
 
 .right {
-    width: 55%;
+    width: 50%;
     background-color: white;
 }
 

@@ -26,7 +26,8 @@ namespace FlightControlWeb.Controllers
             try
             {
                 servers = flightManager.GetAllServer();
-            } catch
+            }
+            catch
             {
                 return BadRequest("Problem in GetAllServers");
             }
@@ -37,24 +38,33 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public ActionResult<string> AddServer([FromBody] Server server)
         {
+            // Check if there is a problem in the json.
+            if (server.ServerId == null || server.ServerURL == null)
+            {
+                return BadRequest("this is not a valid server");
+            }
+
+            // If the json is OK - add this server.
             try
             {
                 flightManager.AddServer(server);
-            } catch
+            }
+            catch
             {
                 return BadRequest("Problem add this server");
             }
             return Ok("success add this server");
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/ApiWithActions/id
         [HttpDelete("{id}")]
         public ActionResult<string> DeleteServer(string id)
         {
             try
             {
                 flightManager.DeleteServerByID(id);
-            } catch
+            }
+            catch
             {
                 return BadRequest("Problem delete this server");
             }

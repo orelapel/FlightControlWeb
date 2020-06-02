@@ -20,5 +20,10 @@ namespace FlightControlWeb.Models
 
         [JsonProperty("segments")]
         public List<Segment> Segments { get; set; }
+
+        public FlightPlan()
+        {
+            Passengers = -1;
+        }
     }
 }

@@ -11,7 +11,7 @@ function getFlightPlan(idFlight) {
         contentType: "applicition/json",
         success: successFlightPlan,
         error: function () {
-            showError("Error getFlightPlan");
+            showError("Error in getting flight Plan");
         }
     });
 }
@@ -23,13 +23,6 @@ function successFlightPlan(flightPlan) {
 
     let numPassengers = document.getElementById("passengers");
     numPassengers.innerText = flightPlan.passengers;
-
-    let isExternal = document.getElementById("externalFlight");
-    if (flightPlan.is_External) {
-        isExternal.innerText = "Yes";
-    } else {
-        isExternal.innerText = "No";
-    }
 
     let initialLocation = document.getElementById("initialLocation");
     initialLocation.innerText = flightPlan.initial_Location.latitude.toString() +
@@ -62,11 +55,8 @@ function removeFlightDetails() {
     $('label[id*="flightId"]').text('');
     $('label[id*="companyName"]').text('');
     $('label[id*="passengers"]').text('');
-    $('label[id*="externalFlight"]').text('');
     $('label[id*="initialLocation"]').text('');
     $('label[id*="endLocation"]').text('');
     $('label[id*="initialDateTime"]').text('');
     $('label[id*="endDateTime"]').text('');
-
-    mark = 0;
 }
