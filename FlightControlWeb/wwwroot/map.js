@@ -64,9 +64,9 @@ function changePlaneColorBack(layer, layer1) {
 
 //Remove plane from map.
 function removePlane(idFlight) {
-    layer = planesMap.get(idFlight);
+    let layer = planesMap.get(idFlight);
     layer.remove();
-    layer1 = planesMap.get(idFlight + "@");
+    let layer1 = planesMap.get(idFlight + "@");
     layer1.remove();
 }
 
@@ -84,7 +84,7 @@ function addRoute(flightPlan) {
 
 // Remove flight route of plane.
 function removeRoute() {
-    for (i in map._layers) {
+    for (let i in map._layers) {
         if (map._layers[i]._path != undefined) {
             map.removeLayer(map._layers[i]);
         }

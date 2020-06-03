@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Control Web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <!-- Add icon delete library -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+    <!-- Refernce to style -->
+    <link rel="stylesheet" type="text/css" href="styleSheet.css" />
+</head>
+
+<body>
+    <div class="content">
+
+        <!-- Header -->
+        <header id="header1" class="container center padding-28">
+            <br />
+            <h1><b>Flight Control</b></h1>
+            <p>By Orel, Noa, Eden and Reut</p>
+            <br />
+        </header>
+        <hr>
+
+        <!-- Error message -->
+        <div id="snackbar"></div>
+
+        <!-- Grid -->
+        <div class="row">
+
+            <div class="col l6 s12">
+                <!-- Map -->
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
+                        <h3><b>Map</b></h3>
+                        <div id="map"></div>
+                        <br />
+                    </div>
+                </div> <hr />
+
+                <!-- Flight details -->
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
+                        <h3><b>Flight Details</b></h3>
+                        <div id="flightDet" class="row">
+                            <div class="column left">
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Flight Id:
+                                    <label class="data" type="text" id="flightId"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Company Name:
+                                    <label class="data" type="text" id="companyName"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Number Of Passengers:
+                                    <label class="data" type="text" id="passengers"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="column right">
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Initial Location:
+                                    <label class="data" type="text" id="initialLocation"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    End Location:
+                                    <label class="data" type="text" id="endLocation"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    Initial Date Time:
+                                    <label class="data" type="text" id="initialDateTime"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <i class='fas fa-plane'></i>
+                                    End Date Time:
+                                    <label class="data" type="text" id="endDateTime"
+                                           readonly="readonly"></label>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
+            <div class="col l6">
+                <!-- My Flights -->
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
+                        <h3><b>My Flights</b></h3>
+                        <table id="t01">
+                            <tr>
+                                <th>Flight Id</th>
+                                <th>Company Name</th>
+                                <th>Delete</th>
+                            </tr>
+                            <!--enter flights by server-->
+                        </table>
+                        <br />
+                    </div>
+                </div><hr>
+
+                <!-- External Flights -->
+                <div class="card margin">
+                    <div class="container white">
+                        <br />
+                        <h3><b>External Flights</b></h3>
+                        <table id="t02" scrolling="yes">
+                            <tr>
+                                <th>Flight Id</th>
+                                <th>Company Name</th>
+                            </tr>
+                        </table>
+                        <br />
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Accept Json File-->
+                <div class="card margin margin-top">
+                    <div class="container white">
+                        <br />
+                        <h3><b>Upload file</b></h3>
+                        <form class="my-form" method="post" action="/">
+                            <label class="button" for="fileItem">select files</label>
+                            <input type="file" id="fileItem" accept="/application/json">
+                            <!-- READ FILE BUTTON -->
+                            <input type="button" id="submition" value="submit"
+                                   onclick="readFiles()" />
+                        </form>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <!-- END GRID -->
+        </div>
+    </div>
+
+    <!--Web functionality-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="main.js"></script>
+    <script src="map.js"></script>
+    <script src="postFlight.js"></script>
+    <script src="flightsTable.js"></script>
+    <script src="innerFlights.js"></script>
+    <script src="flightPlan.js"></script>
+    <script src="delete.js"></script>
+    <script src="allFlights.js"></script>
+    <script src="error.js"></script>
+
+</body>
+</html>

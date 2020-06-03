@@ -1,0 +1,6 @@
+﻿206962417, Eden Simony
+207376773, Reut Berger
+315342394, Noa Rotem
+207232810, Orel Lichtenstein
+
+The unitest tests the FlightManager class, the GetAllFlights method.

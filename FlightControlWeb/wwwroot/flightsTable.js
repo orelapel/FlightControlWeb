@@ -34,8 +34,8 @@ function showChosenFlight(idFlight) {
 
     // Get plane from map and change its color.
     returnPlanesToOriginalColor();
-    layer = planesMap.get(idFlight);
-    layer1 = planesMap.get(idFlight + "@");
+    let layer = planesMap.get(idFlight);
+    let layer1 = planesMap.get(idFlight + "@");
 
     changePlaneColor(layer, layer1);
 }

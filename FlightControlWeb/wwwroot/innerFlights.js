@@ -47,14 +47,14 @@ function successGetFlights(flights) {
             planesMap.delete(id + "@");
 
             // Remove plane path from map.
-            if (mark == idFlight) {
+            if (mark == id) {
                 removeRoute();
             }
         }
     }
 
     // Update or/and add flighte to the tables.
-    flights.forEach(function (flight, i) {
+    flights.forEach(function (flight) {
         // Get flight id.
         let idFlight = flight.flight_Id;
 

@@ -66,7 +66,7 @@ function successGetAllFlights(flights) {
     }
 
     // Update or/and add flighte to the tables.
-    flights.forEach(function (flight, i) {
+    flights.forEach(function (flight) {
         // Get flight id.
         let idFlight = flight.flight_Id;
         // Get flight current location.
@@ -94,8 +94,8 @@ function successGetAllFlights(flights) {
                     + "deleteRow" + idFlight + '"><span class="fa fa-close"></span>'
                     + '<span class="submit - text"> Delete</span></button></td></tr>');
             } else {
-                $('#t02').append('<tr onClick = "showChosenFlight(id)" id = "' + idFlight + '" ><td >'
-                    + idFlight + '</td><td> ' + flight.company_Name + '</td></tr>');
+                $('#t02').append('<tr onClick = "showChosenFlight(id)" id = "' + idFlight
+                    + '" ><td >' + idFlight + '</td><td> ' + flight.company_Name + '</td></tr>');
             }
 
             // When click on Delete, delete row.

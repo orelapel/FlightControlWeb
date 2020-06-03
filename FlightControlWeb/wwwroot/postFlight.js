@@ -9,7 +9,6 @@ function postFlight(jsonString) {
             if (this.status == 400 || this.status == 404 ||
                 this.status == 409 || this.status == 500) {
                 showError("File not a valid json");
-            } else if (this.status === 200) {
             }
             // Request finished.
         }
