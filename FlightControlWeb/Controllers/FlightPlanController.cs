@@ -24,14 +24,10 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}", Name = "Get")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
-            FlightPlan flightPlan;
-            try
+            FlightPlan flightPlan = await flightManager.GetFlightPlanById(id);
+            if (flightPlan == null)
             {
-                flightPlan = await flightManager.GetFlightPlanById(id);
-            }
-            catch
-            {
-                return BadRequest("There is no flight plan with this id");
+                return NotFound("There is no flight plan with this id");
             }
             return Ok(flightPlan);
         }

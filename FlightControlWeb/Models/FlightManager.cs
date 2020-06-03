@@ -25,57 +25,6 @@ namespace FlightControlWeb.Models
         private static ConcurrentDictionary<string, Server> dicServersFId
             = new ConcurrentDictionary<string, Server>();
 
-        public FlightManager()
-        {
-            AddServer(new Server { ServerId = "1", ServerURL = "http://rony10.atwebpages.com" });
-            //AddServer(new Server { ServerId = "2", ServerURL = "http://rony2.atwebpages.com" });
-
-            //List<Segment> segments1 = new List<Segment>()
-            //{
-            //    new Segment{Longitude=70,Latitude=70,Timespan_Seconds=950 },
-            //    new Segment{Longitude=75,Latitude=75.34,Timespan_Seconds=550 },
-            //    new Segment{Longitude=80,Latitude=80,Timespan_Seconds=1000 }
-            //};
-            //FlightPlan flightPlan1 = new FlightPlan
-            //{
-            //    Segments = segments1,
-            //    Passengers = 120,
-            //    Company_Name = "OrelFlightsLtd",
-            //    Initial_Location = new InitialLocation { Longitude = 50, Latitude = 50, Date_Time = "2020-05-24T15:12:21Z" }
-            //};
-            //AddFlightPlan(flightPlan1);
-
-            //List<Segment> segments2 = new List<Segment>()
-            //{
-            //    new Segment{Longitude=34.59,Latitude=35.94,Timespan_Seconds=550 },
-            //    new Segment{Longitude=40,Latitude=41.39,Timespan_Seconds=550 },
-            //    new Segment{Longitude=59.98,Latitude=59.99,Timespan_Seconds=550 }
-            //};
-            //FlightPlan flightPlan2 = new FlightPlan
-            //{
-            //    Segments = segments2,
-            //    Passengers = 270,
-            //    Company_Name = "EL-AL",
-            //    Initial_Location = new InitialLocation { Longitude = 20, Latitude = 20, Date_Time = "2020-05-24T15:14:21Z" }
-            //};
-            //AddFlightPlan(flightPlan2);
-            ////new InitialLocation { Longitude = 90,Latitude=90, Date_Time = "2020-12-26T23:56:21Z" }
-
-            //List<Segment> segments3 = new List<Segment>()
-            //{
-            //    new Segment{Longitude=60,Latitude=60,Timespan_Seconds=700 },
-            //    new Segment{Longitude=79,Latitude=80,Timespan_Seconds=550 },
-            //    new Segment{Longitude=89,Latitude=89,Timespan_Seconds=550 }
-            //};
-            //FlightPlan flightPlan3 = new FlightPlan
-            //{
-            //    Segments = segments3,
-            //    Passengers = 150,
-            //    Company_Name = "NoaFlightLtd",
-            //    Initial_Location = new InitialLocation { Longitude = 55, Latitude = 55, Date_Time = "2020-12-26T20:12:21Z" }
-            //};
-            //AddFlightPlan(flightPlan3);
-        }
         public async virtual Task<List<Flight>> GetAllFlight(string relative_to, bool isExtrnal)
         {
             List<Flight> flights = new List<Flight>();
@@ -202,37 +151,7 @@ namespace FlightControlWeb.Models
         protected virtual async Task<List<Flight>> GetFlightsFromServer(string url)
         {
             string strResult = await SendRequestToServer(url);
-            // Create the request.
-            //string strurl = string.Format(url);
-            //WebRequest requestObjGet = WebRequest.Create(strurl);
-            //requestObjGet.Timeout = 100000;
-            //requestObjGet.Method = "GET";
-            //HttpWebResponse responseObjGet = null;
 
-            //// Get the response from server.
-            //try
-            //{
-            //    responseObjGet = (HttpWebResponse)await requestObjGet.GetResponseAsync();
-            //}
-            //catch
-            //{
-            //    return null;
-            //}
-            ////WebRequest requestObjGet = WebRequest.Create(strurl);
-            ////requestObjGet.Method = "GET";
-            ////HttpWebResponse responseObjGet = null;
-            ////// Get the response from server.
-            ////responseObjGet = (HttpWebResponse)await requestObjGet.GetResponseAsync();
-
-
-            //// Return response to string (json).
-            //string strResult = null;
-            //using (Stream stream = responseObjGet.GetResponseStream())
-            //{
-            //    StreamReader sr = new StreamReader(stream);
-            //    strResult = sr.ReadToEnd();
-            //    sr.Close();
-            //}
             List<Flight> serverFlights;
             // Try to deserialize the jason to list of Flight.
             try
@@ -304,20 +223,6 @@ namespace FlightControlWeb.Models
                     return serverFlightPlan;
                 }
             }
-
-            //// Go over all external servers.
-            //foreach (KeyValuePair<string, Server> server in dicServers)
-            //{
-            //    // Send request to this server.
-            //    string request = server.Value.ServerURL + "/api/FlightPlan/" + id;
-            //    FlightPlan serverFlightPlan = await GetFlightPlanFromServer(request);
-            //    // Check if this flight exist in this server.
-            //    if (serverFlightPlan.Company_Name != null)
-            //    {
-            //        return serverFlightPlan;
-            //    }
-            //}
-
 
             // There is no FlightPlan with this id (internal and external).
             return null;

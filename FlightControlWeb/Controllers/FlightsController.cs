@@ -47,7 +47,7 @@ namespace FlightControlWeb.Controllers
             }
             catch
             {
-                return BadRequest("Failed delete this flight");
+                return NotFound("Failed delete this flight");
             }
             return Ok("success delete flight");
         }
